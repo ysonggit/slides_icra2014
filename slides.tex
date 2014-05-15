@@ -26,6 +26,7 @@
 
 \usepackage{color, xcolor}
 \usepackage{tikz}
+\usetikzlibrary{positioning,chains,fit,shapes,calc}
 \usepackage{hyperref}
 \hypersetup{pdfpagemode=FullScreen}
 \usepackage{ifthen}
@@ -78,6 +79,9 @@
 }
 
 \definecolor{scred}{RGB}{115,0,10}% dark red 
+\definecolor{myblue}{RGB}{80,80,160}
+\definecolor{mygreen}{RGB}{80,160,80}
+
 \begin{document}
 % the titlepage
 \begin{frame}[plain] % the plain option removes the sidebar and header from the title page
@@ -212,7 +216,7 @@
    
   \end{block}
 \end{frame}
-
+\
 \subsection{Robot Authority}
 % installation on GNU/Linux
 \begin{frame}{Authority}
@@ -228,46 +232,167 @@
   \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
-% help me iron out the bugs or give me some comment and suggestions
-\begin{frame}{Construct Authority Tree}{}
+
+\subsection{Algorithm}
+\begin{frame}{Robot Message}
+  \begin{block}{Each robot broadcasts messages to its neighbors.}
+    A message contains:\\
   \begin{itemize}
-    \item<1-> There are probably still some bugs in the theme. If you should find one, then please let me know. No bug is too small!
-    \item<2-> Also, please contact me, if you have some exciting new ideas or just some simple usability improvements.
+    \item The robot's authority.
+    \item The robot's matching.
   \end{itemize}
+  \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
+% help me iron out the bugs or give me some comment and suggestions
+\begin{frame}{Construct Authority Tree}{}
+  \begin{block}{}
+    \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+        \begin{itemize}
+        \item Each robot chooses one of its neighbors to be its
+          parent.
+        \item Robots that choose not to select a parent are
+          called \textbf{root} robot.
+        \item Robots that select a parent are called
+          \textbf{descendants} of that parent. 
+        \end{itemize} 
+      \end{column}%
+      \begin{column}{.4\textwidth}
+        \color{blue}\rule{\linewidth}{4pt}
 
-\subsection{Algorithm}
-% installation on Microsoft Windows
-\begin{frame}{Algorithm}{}
-  \begin{block}{Windows with MiKTeX}
-    Apparently, MiKTeX does not include a local latex directory tree by default. Therefore, you first have to create it.
-    \begin{enumerate}
-      \item To do this, create a folder {\tt <somewhere>} named, e.g., {\tt texmf}
-      \item Add this folder in the Roots tab of the MiKTeX Settings dialog
-      \item Place the {\tt <dirstruct>} in your newly created local latex directory tree\\
-    {\tt <somewhere>\textbackslash texmf}\\
-      \item Open the MiKTeX Settings dialog and click Refresh FNDB.
-    \end{enumerate}
-  \end{block}
+        A figure illustrates the root, parent and descendants.
+      \end{column}%
+    \end{columns}
+   \end{block} 
+\end{frame}
+
+\begin{frame}{Construct Authority Tree}{}
+  \begin{columns}[T] % align columns
+    \begin{column}{.55\textwidth}
+      \begin{block}{Steps to Select a Parent:}
+        \begin{enumerate}
+        \item Discards any message in which the authority contains its
+          own ID.
+        \item Forms an authority containing only its own ID,
+          compares it with the authorities of remaining messages and
+          selects the highest authority.
+          \begin{itemize}
+          \item If its authority is the highest, then it is
+            the root;
+          \item Otherwise, it selects the one who sends the highest
+            authority as its parent. And append its own ID to the highest
+            authority to create its own authority. 
+          \end{itemize} 
+        \end{enumerate} 
+      \end{block}
+    \end{column}%
+    \begin{column}{.35\textwidth}
+      \color{blue}\rule{\linewidth}{4pt}
+
+      Animation showing the steps
+    \end{column}%
+  \end{columns}
+\end{frame}
+%%%%%%%%%%%%%%%%
+
+\begin{frame}{Construct Matching}{}
+  Given a robot $r_i$ and a role vertex $v_i$ for that robot, let the lattice
+  graph edge set
+  $L=\{\emptyset,e_{ij}, e_{ik}, \ldots\}$
+  be the set that contains a null value $\emptyset$ and all outgoing edges from
+  vertex $v_i$.  Let
+  $Q=\{\id(r_a), \id(r_b), \ldots \}$
+  be the set that contains the IDs of the neighbors of $r_i$. 
+  \begin{columns}[T] % align columns
+    \begin{column}{.4\textwidth}      
+      \begin{bclogo}[couleur=orange!10, arrondi=0.2]{A Matching} 
+        for a robot is a function $\eta : Q \rightarrow L$ that
+        associates each neighbor ID with either a lattice graph edge
+        from its role vertex or with the null value.
+      \end{bclogo}
+    \end{column}%
+    \begin{column}{.55\textwidth}
+      \begin{figure}
+        \centering
+        \begin{tikzpicture}[
+          fsnode/.style={},
+          ssnode/.style={},
+          every fit/.style={ellipse,draw,inner sep=5pt,text width=1cm},
+          ->,shorten >= 2pt,shorten <= 2pt
+          ]
+          % the vertices of Q
+          \begin{scope}[start chain=going below,node distance=1mm]
+            \foreach \i/\xcoord in {1/\id(r_a),2/\id(r_b),3/\id(r_c)}
+            \node[fsnode,on chain] (f\i) {$\xcoord$};
+          \end{scope}
+
+          % the vertices of L
+          \begin{scope}[xshift=3cm,start chain=going below,node distance=1mm]
+            \foreach \i/\xcoord in {4/e_{ij},5/e_{ik},6/\emptyset}
+            \node[ssnode,on chain] (s\i) {$\xcoord$};
+          \end{scope}
+         
+          % the set U
+          \node [myblue,fit=(f1) (f3),label=above:$Q$] {};
+          % the set V
+          \node [mygreen,fit=(s4) (s6),label=above:$L$] {};
+          % the edges
+          \draw (f1) -- (s5);
+          \draw (f2) -- (s4);
+          \draw (f3) -- (s6);
+        \end{tikzpicture}
+      \end{figure}
+    \end{column}%
+  \end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
 % installation on Microsoft Windows Cont'd
 \begin{frame}{Local Task Assignment}{}
-  \begin{block}{Windows with TeX Live}
-    In the advanced TeX Live Installer, you can manually change the default position of the root of the local latex directory tree. However, we assume the default position below.
-    \begin{enumerate}
-      \item Place the {\tt <dirstruct>} in your local latex directory tree\\
-        {\tt \%USERPROFILE\%\textbackslash texmf}\\
-        If it does not exist, create it. In XP {\tt \%USERPROFILE\%} is\\
-      {\tt c:\textbackslash Document and Settings\textbackslash<username>}\\
-      by default, and in Vista and above it is by default\\
-      {\tt c:\textbackslash Users\textbackslash<username>}
-      \item Open the TeX Live Manager dialog and select 'Update filename database' under 'Actions'.
-    \end{enumerate}
-  \end{block}
+    \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+          \begin{block}{}
+   
+          \end{block}
+      \end{column}%
+      \begin{column}{.4\textwidth}
+        \begin{figure}[center]
+          \centering
+          \begin{tikzpicture}[scale=0.6]
+            \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)   	-- cycle;
+            \node[color=red] at (3, 2.5) {$r_i$};
+            \draw[color=red, dashed, ->] (1.5,1.5) -- (5,5) node[right] {$X^{(i)}$};
+            \draw[color=red, dashed, ->] (4.5,1.5) -- (1,5) node[above] {$Y^{(i)}$};
+            \draw[fill=blue!50] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) -- (0.67,4) 	-- cycle;
+            \node[color=blue] at (0.5,3.75) {$r_c$};
+            \draw[fill=blue!50] (4,5) -- (3.75,5.5) -- (3.75,5.25) -- (3.5,5.25)   	-- cycle;
+            \node[color=blue] at (3.5,5.7) {$r_f$};
+            \draw[fill=blue!50] (1,2.5) -- (1.25,2) -- (1.25,2.25) -- (1.5,2.25)   	-- cycle;
+            \node[color=blue] at (1.2,1.7) {$r_e$};
+            \draw[fill=blue!50] (5,2.92) -- (4.5,2.75) -- (5,2.58) -- (4.875,2.75)  -- cycle;
+            \node[color=blue] at (5.4,2.75) {$r_d$};
+            \draw[fill=blue!50] (-0.5,2.5) -- (-0.5,2.75) -- (-0.75,2.25) -- (-0.25,2.5)  -- cycle;
+            \node[color=blue] at (-0.75,3) {$r_b$};
+            
+            \draw[fill=red!40, dotted] (4,4) -- (3.75,4) -- (4.25,4.25) -- (4,3.75) -- cycle;
+            \draw[fill=red!40, dotted] (2,2) -- (1.75,2) -- (2.25,2.25) -- (2,1.75) -- cycle;
+            \draw[fill=red!40, dotted] (2,4) -- (1.75,4) -- (2.25,4.25) -- (2,3.75) -- cycle;
+            \draw[fill=red!40, dotted] (4,2) -- (3.75,2) -- (4.25,2.25) -- (4,1.75) -- cycle;
+            
+            \draw[dashed](0.5, 4.25) -- (2,4);
+            \draw[dashed](1.25,2.25) -- (2,2);
+            \draw[dashed](3.75,5.25) -- (4,4);
+            \draw[dashed](4.75,2.75) -- (4,2);
+          \end{tikzpicture}
+          \caption{Robot $r_i$ is a root and assigns its neighbors
+            $r_b, r_c, r_d, r_e, r_f$ desired destinations,
+            respectively. Robot $r_b$ is not assigned to any
+            destination by $r_i$.}
+        \end{figure}
+      \end{column}%
+    \end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
@@ -295,34 +420,6 @@
 
 \section{Results}
 \subsection{Experiments}
-% list of the themes and options
-\begin{frame}{User Interface}{Loading the Theme and Theme Options}
-  \begin{block}{The Presentation Theme}
-    It is very simple to load the presentation theme. Just type\\
-    {\tt \textbackslash usetheme[<options>]\{AAUsimple\}}\\
-    which is exactly the same way other beamer presentation themes are loaded. The presentation theme loads the inner, outer and color AAU Simple theme files and passes the {\tt <options>} on to these files.
-  \end{block}
-  \begin{block}{The Inner Theme}
-    You can load the inner theme directly by\\
-    {\tt \textbackslash useinnertheme\{AAUsimple\}}\\
-    and it has no options.
-  \end{block}
-\end{frame}
-%%%%%%%%%%%%%%%%
-
-% list of the themes and options
-\begin{frame}{User Interface}{Loading the Theme and Theme Options}
-  \begin{block}{The Outer Theme}
-    You can load the outer theme directly by\\
-    {\tt \textbackslash useoutertheme[<options>]\{AAUsimple\}}\\
-    Currently, the theme option is
-  \begin{itemize}
-    \item {\tt shownavsym}: show the navigation symbols
-  \end{itemize}
-  \end{block}
-\end{frame}
-%%%%%%%%%%%%%%%%
-
 % list of the themes and options
 \begin{frame}{User Interface}{Loading the Theme and Theme Options}
   \begin{block}{The Color Theme}
