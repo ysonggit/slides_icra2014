@@ -24,6 +24,17 @@
 \usepackage{helvet}
 \usepackage[helvet]{sfmath}
 
+\usepackage{color, xcolor}
+\usepackage{tikz}
+\usepackage{hyperref}
+\hypersetup{pdfpagemode=FullScreen}
+\usepackage{ifthen}
+\usepackage{animate}
+
+\usepackage[tikz]{bclogo}
+
+\newcommand{\id}{{\rm id}}
+\newcommand{\edge}[3]{{#1}\overset{#2}{\longrightarrow}{#3}}
 
 % colored hyperlinks
 \newcommand{\chref}[2]{%
@@ -66,6 +77,7 @@
 %  \hspace{1cm}\pgfuseimage{titlepagelogo2}
 }
 
+\definecolor{scred}{RGB}{115,0,10}% dark red 
 \begin{document}
 % the titlepage
 \begin{frame}[plain] % the plain option removes the sidebar and header from the title page
@@ -74,81 +86,161 @@
 %%%%%%%%%%%%%%%%
 
 % TOC
-\begin{frame}{Agenda}{}
-\tableofcontents
-\end{frame}
+% \begin{frame}{Agenda}{}
+% \tableofcontents
+% \end{frame}
 %%%%%%%%%%%%%%%%
 
 \section{Introduction}
-% motivation for creating this theme
-\begin{frame}{Introduction}{}
-\begin{block}{Why the AAU Simple beamer theme?}
+\begin{frame}{Motivation}{}
+\begin{block}{}
   \begin{itemize}
-    \item<1-> During the last couple of years, I have shared the beamer themes named \chref{http://kom.aau.dk/~jkn/latex/latex.php\#beamer_aausidebar}{AAU Sidebar} and \chref{http://kom.aau.dk/~jkn/latex/latex.php\#beamer_aalborg}{Aalborg} on my website \chref{http://kom.aau.dk/~jkn}{http://kom.aau.dk/\textasciitilde jkn}.
-    \item<2-> Both of these themes feature a sidebar in which the table of content and progress are shown.
-    \item<3-> Some people (in particular one - Yes, I am looking at you, Mads) have been asking about an AAU beamer theme without a sidebar, and the present theme named \alert{AAU Simple} is an attempt to satisfy this demand. 
-    \item<4-> Like the \chref{http://kom.aau.dk/~jkn/latex/latex.php\#beamer_aausidebar}{AAU Sidebar} theme, the theme is not really useful to people not affiliated with AAU due to the tight integration between the theme and the round AAU logo. However, everyone is of course encouraged to download and modify the theme according to their own needs. 
+  \item<1-> {\textcolor{scred}{\large WHAT DO WE HAVE:}}\\
+    Given a set of autonomous robots, each robot knows its local information.
+  \item<2-> {\textcolor{scred}{\large INPUT:}}\\
+    Representations of various formation patterns.
+  \item<3-> {\textcolor{scred}{\large OUTPUT:}}\\
+    Robot Control law.
+  \item<4-> {\textcolor{scred}{\large WHAT DO WE EXPECT:}}\\
+    Various formation patterns.
   \end{itemize}
+\end{block}
+\end{frame}
+% motivation 
+\begin{frame}{Related Work}{}
+  \begin{block}{}
+    \begin{columns}[T] % align columns
+      \begin{column}{.48\textwidth}
+        \color{red}\rule{\linewidth}{4pt}
+
+        Left Part
+      \end{column}%
+      \hfill%
+      \begin{column}{.48\textwidth}
+        \color{blue}\rule{\linewidth}{4pt}
+
+        Right Part
+      \end{column}%
+    \end{columns}
 \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\subsection{License}
-% the license
-\begin{frame}{Introduction}{License}
-  \begin{itemize}
-    \item<1-> The AAU logo is covered by copyright rules. I have used the logo from \chref{http://aau.designguides.dk}{http://aau.designguides.dk}. As long as you use the theme for making presentations in connection with your work at AAU, you are allowed to use the AAU logo.
-    \item<2-> The rest of the theme is provided under the GNU General Public License v. 3 (GPLv3). This basically means that you can redistribute it and/or modify it under the same license. For more information on the GPL license see \chref{http://www.gnu.org/licenses/}{http://www.gnu.org/licenses/}
-  \end{itemize}
+% \begin{frame}{Introduction}{}
+%   \begin{block}{Prior Work}
+%   \begin{itemize}
+%     \item<1-> 
+%     \item<2-> 
+%   \end{itemize}
+% \end{block}
+% \end{frame}
+
+\begin{frame}{Robot Specifications}{}
+\begin{block}{}
+  \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+        \begin{itemize}
+        \item Each robot has an unique \textbf{ID}.
+        \item Each robot has three states, use a vector $p = [x, y,
+          \theta]^T$ to represent its \textbf{pose}.
+        \item Each robot has a \textbf{range} within which it can
+          sense and communicate with other robots.
+        \item Each robot gets \textbf{observation} of its neighbors'
+          IDs and relative poses in its body frame.
+        \end{itemize}
+      \end{column}%
+      % right column
+      \begin{column}{.4\textwidth}
+        \begin{figure}
+          \centering
+          \begin{tikzpicture}[scale=0.55]
+            \draw[violet, fill=violet!10] (3, 3) circle (3.2);
+            \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)   	-- cycle;
+            \node[color=red] at (3, 2.5) {$r_i$};
+            
+            \draw[color=red, dashed, ->] (1.5,1.5) -- (4.5,4.5) node[right] {$X^{(i)}$};
+            \draw[color=red, dashed, ->] (4.5,1.5) -- (1.5,4.5) node[above] {$Y^{(i)}$};
+            
+            \draw[fill=blue!50] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) -- (0.67,4) 	-- cycle;
+            \node[color=blue] at (0.5,3.75) {$r_c$};
+            \draw[fill=blue!50] (4,5) -- (3.75,5.5) -- (3.75,5.25) -- (3.5,5.25)   	-- cycle;
+            \node[color=blue] at (3.5,5.7) {$r_f$};
+            \draw[fill=blue!50] (1,2.5) -- (1.25,2) -- (1.25,2.25) -- (1.5,2.25)   	-- cycle;
+            \node[color=blue] at (1.2,1.7) {$r_e$};
+            \draw[fill=blue!50] (5,2.92) -- (4.5,2.75) -- (5,2.58) -- (4.875,2.75)  -- cycle;
+            \node[color=blue] at (5.4,2.75) {$r_d$};
+            % \draw[fill=blue!50] (-0.5,2.5) -- (-0.5,2.75) -- (-0.75,2.25) -- (-0.25,2.5)  -- cycle;
+            % \node[color=blue] at (-0.75,3) {$r_b$};
+          \end{tikzpicture}
+          \caption{Robot $r_i$ and its neighbors $r_c, r_d, r_e,
+            r_f$ in its local $X^{(i)}$-$Y^{(i)}$ coordinates. The
+            disk describes $r_i$'s range.}
+          \label{fig:robotmodel}
+        \end{figure}
+      \end{column}%
+    \end{columns}
+\end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\section{Installation}
-% general installation instructions
-\begin{frame}{Installation}
-  The theme consists of four files
-  \begin{enumerate}
-    \item {\tt beamerthemeAAUsimple.sty}
-    \item {\tt beamerinnerthemeAAUsimple.sty}
-    \item {\tt beamerouterthemeAAUsimple.sty}
-    \item {\tt beamercolorthemeAAUsimple.sty}
-  \end{enumerate}
-  The theme can either be installed for local or global use.
-  \pause
-  \begin{block}{Local Installation}
-    The simplest way of installing the theme is by placing the four theme files in the same folder as your presentation. When you download the theme, the four theme files are located in the {\tt local} folder.
+\section{Lattice Graph}
+% definition of lattice graph
+\begin{frame}{Lattice Graph}
+  \begin{block}{}
+    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{Definition}
+      A \textbf{lattice graph} is a strongly connected directed
+      multigraph in which each edge $e$ is labeled with a rigid body
+      transformation $T(e)$ and each $\edge{v}{T(e)}{w}$ has an
+      inverse edge $\edge{w}{T(e)^{-1}}{v}$.  
+    \end{bclogo}
+    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{} 
+      Given a lattice graph $G=(V, E)$ and a set of robots $R = \{
+      r_1, \ldots, r_n \}$, we say that $R$ \textbf{satisfies} $G$ if
+      there exists a role function $f: R \rightarrow V$ that preserves
+      the neighborhood structure of $G$.
+      % 
+      Specifically, for any $i$ and $j$, if $r_i$ and $r_j$ are neighbors, 
+      there must exist an edge
+      $e_{ij}: \edge{f(r_i)}{}{f(r_j)}$ in $E$, such that
+      $$ T(r_j) = T(r_i) T(e_{ij})$$
+    \end{bclogo}
   \end{block}
 \end{frame}
 
-% general installation instructions
-\begin{frame}{Installation}
-  \begin{block}{Global Installation}
-  \begin{itemize}
-     \item If you wish to make the theme globally available, you must put the files in your local latex directory tree. The location of the root of the local directory tree depends on the operating system and the latex distribution. On the following slides, you can read the instructions for some common setups.
-    \item When you download the theme, the four theme files are embedded in a directory structure (in the {\tt global} folder) ready to be copied directly to the root of your local directory tree.
-    \item On the following slides, we refer to this directory structure as {\tt <dirstruct>}. \alert{Note} that some parts of the directory may already exist if you have installed other packages in your local latex directory tree. If this is the case, you simply merge {\tt <dirstruct>} with your existing setup.
-  \end{itemize}
+\begin{frame}{Lattice Graph}
+  \begin{block}{}
+   
   \end{block}
 \end{frame}
 
-\subsection{GNU/Linux}
+\subsection{Robot Authority}
 % installation on GNU/Linux
-\begin{frame}{Installation}{GNU/Linux}
-  \begin{block}{Ubuntu with TeX Live}
-    \begin{enumerate}
-      \item Place the {\tt <dirstruct>} in the root of your local latex directory tree. By default it is\\
-        {\tt \textasciitilde /texmf}\\
-        If the root does not exist, create it. The symbol {\tt \textasciitilde} refers to your home folder, i.e., {\tt /home/<username>}
-      \item In a terminal run\\
-        {\tt \$ texhash \textasciitilde /texmf}
-    \end{enumerate}
+\begin{frame}{Authority}
+  \begin{block}{}
+    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{Definition} 
+      An \textbf{authority} is an ordered list of robot IDs
+      $$ \langle \id_1, \ldots, \id_k \rangle $$
+      The first ID in the list, $\id_1$ is called the \textbf{root} ID.
+      Likewise, the final ID in the list, $\id_k$ is called the
+      \textbf{sender} ID.  The number $k$ of IDs in the list is called
+      its \textbf{length}.
+    \end{bclogo}
   \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
+% help me iron out the bugs or give me some comment and suggestions
+\begin{frame}{Construct Authority Tree}{}
+  \begin{itemize}
+    \item<1-> There are probably still some bugs in the theme. If you should find one, then please let me know. No bug is too small!
+    \item<2-> Also, please contact me, if you have some exciting new ideas or just some simple usability improvements.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%
 
-\subsection{Microsoft Windows}
+
+\subsection{Algorithm}
 % installation on Microsoft Windows
-\begin{frame}{Installation}{Microsoft Windows}
+\begin{frame}{Algorithm}{}
   \begin{block}{Windows with MiKTeX}
     Apparently, MiKTeX does not include a local latex directory tree by default. Therefore, you first have to create it.
     \begin{enumerate}
@@ -163,7 +255,7 @@
 %%%%%%%%%%%%%%%%
 
 % installation on Microsoft Windows Cont'd
-\begin{frame}{Installation}{Microsoft Windows}
+\begin{frame}{Local Task Assignment}{}
   \begin{block}{Windows with TeX Live}
     In the advanced TeX Live Installer, you can manually change the default position of the root of the local latex directory tree. However, we assume the default position below.
     \begin{enumerate}
@@ -179,7 +271,7 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\subsection{Mac OS X}
+\subsection{Robot Motion Control}
 % text
 \begin{frame}{Installation}{Mac OS X}
   \begin{block}{Mac OS X with MacTeX}
@@ -190,7 +282,6 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\subsection{Required Packages}
 % list of required packages
 \begin{frame}{Installation}{Required Packages}
   Of course, you have to have the Beamer class installed. In addition, the theme loads two packages
@@ -202,8 +293,8 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\section{User Interface}
-\subsection{Loading the Theme and Theme Options}
+\section{Results}
+\subsection{Experiments}
 % list of the themes and options
 \begin{frame}{User Interface}{Loading the Theme and Theme Options}
   \begin{block}{The Presentation Theme}
@@ -253,7 +344,7 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\subsection{Modifying the theme}
+\subsection{Results}
 % how to modify the theme
 {\setbeamercolor{AAUsimple}{fg=gray!50,bg=orange!50}
  \setbeamercolor{structure}{fg=red}
@@ -264,7 +355,15 @@
     \item<1-> The default configuration of fonts, colors, and layout complies with the \chref{http://aau.designguides.dk}{AAU design guidelines} and is the \alert{official} version of the theme.
     \item<2-> However, you can modify specific elements of the theme through the templates provided by the beamer class. Please refer to the beamer user manual for instructions.
     \item<3-> For example, on this slide the following commands have been used
-      \begin{itemize}
+  \end{itemize}
+\end{frame}}
+%%%%%%%%%%%%%%%%
+
+\subsection{Conclusions}
+% Widescreen Support
+\begin{frame}{Conclusions}{}
+\begin{block}{}
+   \begin{itemize}
         \item Change the header colours:\\
         {\tt \textbackslash setbeamercolor\{AAUsimple\}\{fg=blue!20,bg=red!50\}}
         \item Change the color of the structural elements:\\
@@ -274,17 +373,6 @@
         \item Change the background color of the text
         {\tt \textbackslash setbeamercolor\{normal text\}\{bg=gray!20\}}
       \end{itemize}
-  \end{itemize}
-\end{frame}}
-%%%%%%%%%%%%%%%%
-
-\subsection{Widescreen Support}
-% Widescreen Support
-\begin{frame}{User Interface}{Widescreen Support}
-\begin{block}{Widescreen Support}
-  Newer projectors and almost any modern TV support a widescreen format such as 16:10 or 16:9. Beamer (>= v. 3.10) supports various aspect ratios of the slides. According to section 8.3 on page 77 of the Beamer user guide v. 3.10, you can write\\
-{\tt\textbackslash documentclass[aspectratio=1610]\{beamer\}}\\
-to get slides with an aspect ratio of 16:10. You can also use 169, 149, 54, 43 (default), and 32 to get other aspect ratios.
 \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
@@ -300,25 +388,12 @@ to get slides with an aspect ratio of 16:10. You can also use 169, 149, 54, 43 (
 %\end{frame}
 %%%%%%%%%%%%%%%%%
 
-\subsection{Bugs, Comments and Suggestions}
-% help me iron out the bugs or give me some comment and suggestions
-\begin{frame}{Feedback}{Bugs, Comments and Suggestions}
-  \begin{itemize}
-    \item<1-> There are probably still some bugs in the theme. If you should find one, then please let me know. No bug is too small!
-    \item<2-> Also, please contact me, if you have some exciting new ideas or just some simple usability improvements.
-  \end{itemize}
-\end{frame}
-%%%%%%%%%%%%%%%%
-
 \subsection{Contact Information}
 % contact information
-\begin{frame}{Feedback}{Contact Information}
+\begin{frame}{Questions}{}
 In case you have any comments, suggestions or have found a bug, please do not hesitate to contact me. You can find my contact details below.
   \begin{center}
-    \insertauthor\\
-    \chref{http://kom.aau.dk/~jkn}{http://kom.aau.dk/\textasciitilde jkn}\\
-    Niels Jernes Vej 12, A6-309\\
-    9220 Aalborg Ø
+    {\LARGE THANK YOU!}
   \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%
