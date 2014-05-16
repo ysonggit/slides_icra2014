@@ -27,6 +27,7 @@
 \usepackage{color, xcolor}
 \usepackage{tikz}
 \usetikzlibrary{positioning,chains,fit,shapes,calc}
+
 \usepackage{hyperref}
 \hypersetup{pdfpagemode=FullScreen}
 \usepackage{ifthen}
@@ -99,13 +100,13 @@
 \begin{frame}{Motivation}{}
 \begin{block}{}
   \begin{itemize}
-  \item<1-> {\textcolor{scred}{\large WHAT DO WE HAVE:}}\\
+  \item {\textcolor{scred}{\large WHAT DO WE HAVE:}}\\
     Given a set of autonomous robots, each robot knows its local information.
-  \item<2-> {\textcolor{scred}{\large INPUT:}}\\
+  \item {\textcolor{scred}{\large INPUT:}}\\
     Representations of various formation patterns.
-  \item<3-> {\textcolor{scred}{\large OUTPUT:}}\\
+  \item {\textcolor{scred}{\large OUTPUT:}}\\
     Robot Control law.
-  \item<4-> {\textcolor{scred}{\large WHAT DO WE EXPECT:}}\\
+  \item {\textcolor{scred}{\large WHAT DO WE EXPECT:}}\\
     Various formation patterns.
   \end{itemize}
 \end{block}
@@ -190,14 +191,14 @@
 \section{Lattice Graph}
 % definition of lattice graph
 \begin{frame}{Lattice Graph}
-  \begin{block}{}
     \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{Definition}
       A \textbf{lattice graph} is a strongly connected directed
       multigraph in which each edge $e$ is labeled with a rigid body
       transformation $T(e)$ and each $\edge{v}{T(e)}{w}$ has an
       inverse edge $\edge{w}{T(e)^{-1}}{v}$.  
     \end{bclogo}
-    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{} 
+    \begin{block}{}
+%    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{} 
       Given a lattice graph $G=(V, E)$ and a set of robots $R = \{
       r_1, \ldots, r_n \}$, we say that $R$ \textbf{satisfies} $G$ if
       there exists a role function $f: R \rightarrow V$ that preserves
@@ -207,7 +208,7 @@
       there must exist an edge
       $e_{ij}: \edge{f(r_i)}{}{f(r_j)}$ in $E$, such that
       $$ T(r_j) = T(r_i) T(e_{ij})$$
-    \end{bclogo}
+ %   \end{bclogo}
   \end{block}
 \end{frame}
 
@@ -230,11 +231,6 @@
       its \textbf{length}.
     \end{bclogo}
   \end{block}
-\end{frame}
-%%%%%%%%%%%%%%%%
-
-\subsection{Algorithm}
-\begin{frame}{Robot Message}
   \begin{block}{Each robot broadcasts messages to its neighbors.}
     A message contains:\\
   \begin{itemize}
@@ -245,9 +241,35 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 
+\subsection{Algorithm}
+\begin{frame}{Algorithm}
+  \begin{block}{General Algorithm Description}
+    \begin{enumerate}
+    \item<1-> Each robot decides whether to be a \textcolor{red}{root}
+      robot or a \textcolor{blue}{descendant} robot based on ``authority''.
+      
+    \item<2-> Each robot chooses a \textcolor{purple}{role}. 
+      \begin{itemize}
+      \item \textcolor{red}{Root} robots always select the
+        first lattice vertex as their role.  
+      \item \textcolor{blue}{Descendant} robots accept
+        their roles as from their parents.
+      \end{itemize}    
+      
+    \item<3-> Each robot computes a local task assignment for
+      its neighbors and broadcasts this assignment to its neighbors.
+      
+    \item<4-> Each \textcolor{blue}{descendant} robot moves toward to
+      position assigned by its parent.
+    \end{enumerate}
+  \end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%
+
 % help me iron out the bugs or give me some comment and suggestions
-\begin{frame}{Construct Authority Tree}{}
-  \begin{block}{}
+\begin{frame}{Construct Authority Tree}{1. Decide to be root or descendant}
+  \begin{block}{The key idea to make our local strategy reach a global static
+    state is the authority carried by each robot}
     \begin{columns}[T] % align columns
       \begin{column}{.5\textwidth}
         \begin{itemize}
@@ -268,10 +290,11 @@
    \end{block} 
 \end{frame}
 
-\begin{frame}{Construct Authority Tree}{}
+\begin{frame}{Construct Authority Tree}{1. Decide to be root or descendant}
+  \begin{block}{The robots use these authorities to establish a collection of
+  authority trees}
   \begin{columns}[T] % align columns
     \begin{column}{.55\textwidth}
-      \begin{block}{Steps to Select a Parent:}
         \begin{enumerate}
         \item Discards any message in which the authority contains its
           own ID.
@@ -280,24 +303,25 @@
           selects the highest authority.
           \begin{itemize}
           \item If its authority is the highest, then it is
-            the root;
+            the \textcolor{red}{root};
           \item Otherwise, it selects the one who sends the highest
-            authority as its parent. And append its own ID to the highest
+            authority as its parent. Append its own ID to the highest
             authority to create its own authority. 
           \end{itemize} 
         \end{enumerate} 
-      \end{block}
+
     \end{column}%
-    \begin{column}{.35\textwidth}
+    \begin{column}{.45\textwidth}
       \color{blue}\rule{\linewidth}{4pt}
 
       Animation showing the steps
     \end{column}%
   \end{columns}
+\end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\begin{frame}{Construct Matching}{}
+\begin{frame}{Construct Matching}{2. Role selection}
   Given a robot $r_i$ and a role vertex $v_i$ for that robot, let the lattice
   graph edge set
   $L=\{\emptyset,e_{ij}, e_{ik}, \ldots\}$
@@ -350,14 +374,22 @@
 %%%%%%%%%%%%%%%%
 
 % installation on Microsoft Windows Cont'd
-\begin{frame}{Local Task Assignment}{}
+\begin{frame}{Local Task Assignment}{3. Hungarain Algorithm}
+  To compute an optimal matching of a robot with $N$ neighbors and $E$
+  out-going edges of its role in the lattice graph, define a weight
+  matrix of size $N \times \max(N, E)$ and apply Hungarian Algorithm.
     \begin{columns}[T] % align columns
       \begin{column}{.5\textwidth}
-          \begin{block}{}
-   
-          \end{block}
+        \begin{enumerate}
+        \item Each row corresponds to a neighbor;
+        \item Each column corresponds to an out-going edge of robot's
+          role or a null value $\emptyset$.
+        \item The entries of the matrix is the Euclidean distance
+          between current position of each neighbor and the desired
+          position if matched with a lattice graph edge.
+        \end{enumerate}
       \end{column}%
-      \begin{column}{.4\textwidth}
+      \begin{column}{.45\textwidth}
         \begin{figure}[center]
           \centering
           \begin{tikzpicture}[scale=0.6]
@@ -386,90 +418,113 @@
             \draw[dashed](3.75,5.25) -- (4,4);
             \draw[dashed](4.75,2.75) -- (4,2);
           \end{tikzpicture}
-          \caption{Robot $r_i$ is a root and assigns its neighbors
-            $r_b, r_c, r_d, r_e, r_f$ desired destinations,
-            respectively. Robot $r_b$ is not assigned to any
-            destination by $r_i$.}
+          \caption{Robot $r_i$ has its neighbors $r_c, r_d, r_e, r_f$
+            match to one of its out-going edges, has $r_b$ match to $\emptyset$.}
         \end{figure}
       \end{column}%
     \end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\subsection{Robot Motion Control}
-% text
-\begin{frame}{Installation}{Mac OS X}
-  \begin{block}{Mac OS X with MacTeX}
-     Place the {\tt <dirstruct>} in the root of your local latex directory tree. By default it is\\
-        {\tt \textasciitilde /Library/texmf}\\
-        If the root does not exist, create it. The symbol {\tt \textasciitilde} refers to your home folder, i.e., {\tt /home/<username>}
+\begin{frame}{Robot Motion Control}{4. Robot Movements}
+
+\end{frame}
+%%%%%%%%%%%%%%%%
+\begin{frame}{Robot Motion Control}{4. Constraints: Bounded Movement Model}
+  \begin{block}{Bounded Movement Example}
+    At time $t$, robot $r_i$ selects robot $r_p$ as its parent.
+    \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+      % Definition of circles
+        \def\firstcircle{(0,0) circle (2cm)}
+        \def\secondcircle{(2.3,1.8) circle (1.5cm)}
+        \def\thirdcircle{(0,0) circle (1.5cm)}
+        \colorlet{circle edge}{blue!50}
+        \colorlet{circle area}{blue!20}
+        \tikzset{filled/.style={fill=circle area, draw=circle edge, thick},
+          outline/.style={draw=circle edge, thick}}
+        \tikzstyle{important line}=[very thick]
+        % Set A and B
+        \begin{tikzpicture}[scale=0.7]
+          \begin{scope}
+            \clip \firstcircle;
+            \fill[filled] \secondcircle;
+          \end{scope}
+          \draw[violet, fill=violet!10, dotted] (0, 0) circle (3.2cm);
+          \draw[outline] \firstcircle node {$ $}; \draw[fill=circle
+          area, red] (0,0) circle (0.1cm); \node at (-0.75,-0.3) {$p_p(t)$};
+          \draw[style=important line, circle edge](90:1cm) --
+          node[black]{$\phi- v\Delta{t}$}+(0,0); \draw[style=important
+          line, circle edge](0,0) -- (135:2cm); \draw[outline]
+          \secondcircle node {$ $};
+
+          \draw[fill=circle area, blue] (2.3,1.8) circle (0.1cm); 
+          \node at (3.2, 2) {$p_i^{(p)}(t)$};
+
+          \draw[style=important line, circle edge](2.3, 1.8) -- (1.55,3.09);
+          \node at (1.4, 2.2) {$v\Delta{t}$};
+
+          \draw[fill=circle area, blue] (3, -0.7) circle (0.1cm); 
+          \node at (3.8,-1) {$\bar{p}_i^{(p)}(t)$};
+          \draw[dashed] \thirdcircle node{$ $};
+
+          \draw[dashed](0, 0) -- (0,-1.5);
+          \node at (0.5, -0.7) {$v\Delta{t}$};
+
+          \draw[violet](0, 0) -- (-3.2, 0);
+          \node at (-2.4, -0.5) {$\phi$};
+          
+          \draw[fill=circle area, blue] (1.96, 0.32) circle (0.1cm); \node
+          at (3.5,0) {${p}_i^{(p)}(t+\Delta{t})$};
+        \end{tikzpicture}
+      \end{column}%
+      \begin{column}{.45\textwidth}
+        \begin{itemize}
+        \item Shadowed region is the range of robot
+          \textcolor{red}{$r_p$} at time $t$.
+        \item The actual pose \textcolor{red}{$p_p(t+\Delta{t})$} of
+          \textcolor{red}{$r_p$} could be anywhere in the dashed
+          circle.
+        \item The desired pose \textcolor{blue}{$\bar{p}_i^{(p)}(t)$}
+          for robot \textcolor{blue}{$r_i$} is assigned by
+          \textcolor{red}{$r_p$} at time $t$.
+        \end{itemize}         
+      \end{column}%
+    \end{columns}
+    On the boundary of the intersection of $P_p \cap P_i$,
+    \textcolor{blue}{$r_i$} choose the nearest point to the desired
+    ultimate destination position as its real destination position at
+    time $t+\Delta{t}$
   \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-% list of required packages
-\begin{frame}{Installation}{Required Packages}
-  Of course, you have to have the Beamer class installed. In addition, the theme loads two packages
-  \begin{itemize}
-    \item TikZ\footnote{By the way, TikZ is an awesome package for creating beautiful graphics. If you do not believe me, then have a look at these \chref{http://www.texample.net/tikz/examples/}{online examples} or the \chref{http://tug.ctan.org/tex-archive/graphics/pgf/base/doc/generic/pgf/pgfmanual.pdf}{pgf user manual}. If you want to create beautiful plots, you should use the pgfplots package which is based on TikZ.}
-    \item calc
-  \end{itemize}
-  These packages are very common and should therefore be included in your latex distribution.
-\end{frame}
-%%%%%%%%%%%%%%%%
 
 \section{Results}
 \subsection{Experiments}
 % list of the themes and options
-\begin{frame}{User Interface}{Loading the Theme and Theme Options}
-  \begin{block}{The Color Theme}
-    You can load the color theme directly by\\
-    {\tt \textbackslash usecolortheme\{AAUsimple\}}\\
-    and it has no options.
-  \end{block}
-  \pause
-  \begin{block}{The Color Element {\tt AAUsimple}}
-    The color theme defines a new beamer color element named {\tt AAUsimple} whose foreground and background colors are
-    \begin{itemize}
-      \item fg: {\usebeamercolor[fg]{AAUsimple}light blue (\{RGB\}\{194,193,204\})}
-      \item bg: {\usebeamercolor[bg]{AAUsimple}dark blue (\{RGB\}\{33,26,82\})}
-    \end{itemize}
-    You can use these colors in the standard beamer way by using the command
-    {\tt \textbackslash usebeamercolor[<fg or bg>]\{AAUsimple\}}. See the beamer manual for instructions.\\
- \pause Note that this version of the theme is an official AAU version and is in accordance with the \chref{http://aau.designguides.dk/}{AAU design guide}. However, you can easily change it (including the colour of the logo) by following the steps in {\tt beamercolorthemeAAUsimple.sty}.
+\begin{frame}{Experiments}{}
+  \begin{block}{}
+   
   \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\subsection{Results}
 % how to modify the theme
-{\setbeamercolor{AAUsimple}{fg=gray!50,bg=orange!50}
- \setbeamercolor{structure}{fg=red}
- \setbeamercolor{frametitle}{use=structure,fg=structure.fg}
- \setbeamercolor{normal text}{bg=gray!20}
-\begin{frame}{User Interface}{Modifying the Theme}
-  \begin{itemize}
-    \item<1-> The default configuration of fonts, colors, and layout complies with the \chref{http://aau.designguides.dk}{AAU design guidelines} and is the \alert{official} version of the theme.
-    \item<2-> However, you can modify specific elements of the theme through the templates provided by the beamer class. Please refer to the beamer user manual for instructions.
-    \item<3-> For example, on this slide the following commands have been used
-  \end{itemize}
-\end{frame}}
+% {\setbeamercolor{AAUsimple}{fg=gray!50,bg=orange!50}
+%  \setbeamercolor{structure}{fg=red}
+%  \setbeamercolor{frametitle}{use=structure,fg=structure.fg}
+%  \setbeamercolor{normal text}{bg=gray!20}
+\begin{frame}{Results}{}
+  
+\end{frame}
 %%%%%%%%%%%%%%%%
 
 \subsection{Conclusions}
 % Widescreen Support
 \begin{frame}{Conclusions}{}
 \begin{block}{}
-   \begin{itemize}
-        \item Change the header colours:\\
-        {\tt \textbackslash setbeamercolor\{AAUsimple\}\{fg=blue!20,bg=red!50\}}
-        \item Change the color of the structural elements:\\
-        {\tt \textbackslash setbeamercolor\{structure\}\{fg=black\}}\\
-        \item Change the frame title text color:
-        {\tt \textbackslash setbeamercolor\{frametitle\}\{use=structure, fg=structure.fg\}}
-        \item Change the background color of the text
-        {\tt \textbackslash setbeamercolor\{normal text\}\{bg=gray!20\}}
-      \end{itemize}
+   
 \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
