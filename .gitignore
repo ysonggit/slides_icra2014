@@ -1,5 +1,7 @@
 .DS_Store
 slides.pdf
+figs/exptime-eps-converted-to.pdf
+figs/expqual-eps-converted-to.pdf
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
