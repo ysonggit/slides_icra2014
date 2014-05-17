@@ -24,10 +24,25 @@
 \usepackage{helvet}
 \usepackage[helvet]{sfmath}
 
+% For math font script
+\usepackage[mathscr]{euscript}
+
 \usepackage{color, xcolor}
 \usepackage{tikz}
+% tikz setup for descendant robot motion figure 
 \usetikzlibrary{positioning,chains,fit,shapes,calc}
-
+\usetikzlibrary{arrows,shadows,trees}
+\tikzset{
+  basic/.style  = {draw, text width=2cm, drop shadow, font=\sffamily, rectangle},
+  root/.style   = {basic, rounded corners=2pt, thin, align=center,
+                   fill=red!30},
+  level 2/.style = {basic, rounded corners=6pt, thin,align=center, fill=orange!30,
+                   text width=8em},
+  level 3/.style = {basic, thin, align=left, fill=pink!60, text width=8em}
+}
+% tikz setup for lattice graph
+\usepackage{pgf}
+\usetikzlibrary{arrows,automata}
 \usepackage{hyperref}
 \hypersetup{pdfpagemode=FullScreen}
 \usepackage{ifthen}
@@ -112,23 +127,25 @@
 \end{block}
 \end{frame}
 % motivation 
-\begin{frame}{Related Work}{}
-  \begin{block}{}
-    \begin{columns}[T] % align columns
-      \begin{column}{.48\textwidth}
-        \color{red}\rule{\linewidth}{4pt}
 
-        Left Part
-      \end{column}%
-      \hfill%
-      \begin{column}{.48\textwidth}
-        \color{blue}\rule{\linewidth}{4pt}
+% \begin{frame}{Related Work}{}
+%   \begin{block}{}
+%     \begin{columns}[T] % align columns
+%       \begin{column}{.48\textwidth}
+%         \color{red}\rule{\linewidth}{4pt}
 
-        Right Part
-      \end{column}%
-    \end{columns}
-\end{block}
-\end{frame}
+%         Left Part
+%       \end{column}%
+%       \hfill%
+%       \begin{column}{.48\textwidth}
+%         \color{blue}\rule{\linewidth}{4pt}
+
+%         Right Part
+%       \end{column}%
+%     \end{columns}
+% \end{block}
+% \end{frame}
+
 %%%%%%%%%%%%%%%%
 
 % \begin{frame}{Introduction}{}
@@ -213,13 +230,64 @@
 \end{frame}
 
 \begin{frame}{Lattice Graph}
-  \begin{block}{}
-   
-  \end{block}
+    \begin{columns}[T] % align columns
+      \begin{column}{.6\textwidth}
+        \begin{block}{Example: lattice graph for repeated square patterns}
+        \begin{itemize}
+          \item  There is one node with four outgoing edges connecting to itself. 
+          \item Each edge is associated with a translation $Tr(x, y)$
+            of position $(x, y)$ relative to the current node.
+          \item The edge length is $40$. 
+          \item For a robot playing the role of this node, its
+            neighbors should be in locations $(40, 0), (0, -40), (-40,
+            0)$ and $(0, 40)$.
+          \end{itemize}
+        \end{block}
+      \end{column}%
+      \begin{column}{.4\textwidth}
+        \begin{figure}
+          \centering
+          % \includegraphics[scale=0.45]{figs/sq}
+          \begin{tikzpicture}[->,>=stealth',shorten >=5pt,auto,node distance=1cm,semithick]
+            \tikzstyle{every state}=[fill=scred,draw=none, text=white]
+            \node[state, scale=0.6] (A)         {$0$};
+            \path (A) edge [loop above] node {Tr(0, 40)} (A)
+                      edge [loop left]  node {Tr(-40,0)} (A)
+                      edge [loop below] node {Tr(0, -40)} (A)
+                      edge [loop right] node {Tr(40, 0)} (A);
+          \end{tikzpicture}
+        \end{figure}
+        \begin{figure}
+          \centering
+          \includegraphics[scale=1]{figs/squarelattice}
+        \end{figure}
+      \end{column}%
+    \end{columns}
 \end{frame}
-\
+
+\begin{frame}{Lattice Graph}
+    \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+      
+      \end{column}%
+      \begin{column}{.5\textwidth}   
+        \begin{figure}
+          \begin{minipage}{\linewidth}
+            \centering
+          \includegraphics[scale=0.4]{figs/hex}
+          \end{minipage}
+          \vspace{2mm}
+          \begin{minipage}{\linewidth}
+            \centering
+          \includegraphics[scale=0.75]{figs/hexagonlattice}
+          \end{minipage}
+        \end{figure}
+       
+      \end{column}%
+    \end{columns}
+\end{frame}
+
 \subsection{Robot Authority}
-% installation on GNU/Linux
 \begin{frame}{Authority}
   \begin{block}{}
     \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{Definition} 
@@ -309,7 +377,6 @@
             authority to create its own authority. 
           \end{itemize} 
         \end{enumerate} 
-
     \end{column}%
     \begin{column}{.45\textwidth}
       \color{blue}\rule{\linewidth}{4pt}
@@ -322,20 +389,26 @@
 %%%%%%%%%%%%%%%%
 
 \begin{frame}{Construct Matching}{2. Role selection}
-  Given a robot $r_i$ and a role vertex $v_i$ for that robot, let the lattice
-  graph edge set
-  $L=\{\emptyset,e_{ij}, e_{ik}, \ldots\}$
-  be the set that contains a null value $\emptyset$ and all outgoing edges from
-  vertex $v_i$.  Let
-  $Q=\{\id(r_a), \id(r_b), \ldots \}$
-  be the set that contains the IDs of the neighbors of $r_i$. 
+ \begin{block}{}
+  Given a robot $r_i$ and a role vertex $v_i$ for that
+  robot, let the lattice graph edge set $L=\{\emptyset,e_{ij}, e_{ik},
+  \ldots\}$ be the set that contains a null value $\emptyset$ and all
+  outgoing edges from vertex $v_i$. Let $Q=\{\id(r_a), \id(r_b),
+  \ldots \}$ be the 
   \begin{columns}[T] % align columns
-    \begin{column}{.4\textwidth}      
-      \begin{bclogo}[couleur=orange!10, arrondi=0.2]{A Matching} 
-        for a robot is a function $\eta : Q \rightarrow L$ that
+    \hspace{4mm}
+    \begin{column}{.45\textwidth}
+      set that contains the IDs of the neighbors of $r_i$.  
+      \vspace{2mm}
+      \hrule
+      \hrule
+     \begin{bclogo}[noborder=true, logo=\bccrayon]{} 
+        A \textbf{matching} for a robot is a function $\eta : Q \rightarrow L$ that
         associates each neighbor ID with either a lattice graph edge
-        from its role vertex or with the null value.
+        from its role vertex or with the null value $\emptyset$.
       \end{bclogo}
+      \hrule
+      \hrule
     \end{column}%
     \begin{column}{.55\textwidth}
       \begin{figure}
@@ -343,33 +416,32 @@
         \begin{tikzpicture}[
           fsnode/.style={},
           ssnode/.style={},
-          every fit/.style={ellipse,draw,inner sep=5pt,text width=1cm},
+          every fit/.style={ellipse,draw,inner sep=0pt,text width=1cm},
           ->,shorten >= 2pt,shorten <= 2pt
           ]
           % the vertices of Q
           \begin{scope}[start chain=going below,node distance=1mm]
-            \foreach \i/\xcoord in {1/\id(r_a),2/\id(r_b),3/\id(r_c)}
+            \foreach \i/\xcoord in {1/\id(r_a),2/\id(r_b),3/\vdots, 4/\id(r_c)}
             \node[fsnode,on chain] (f\i) {$\xcoord$};
           \end{scope}
-
           % the vertices of L
           \begin{scope}[xshift=3cm,start chain=going below,node distance=1mm]
-            \foreach \i/\xcoord in {4/e_{ij},5/e_{ik},6/\emptyset}
+            \foreach \i/\xcoord in {5/e_{ij},6/e_{ik}, 7/\vdots, 8/\emptyset}
             \node[ssnode,on chain] (s\i) {$\xcoord$};
-          \end{scope}
-         
+          \end{scope}         
           % the set U
-          \node [myblue,fit=(f1) (f3),label=above:$Q$] {};
+          \node [myblue,fit=(f1) (f4),label=below:$Q$] {};
           % the set V
-          \node [mygreen,fit=(s4) (s6),label=above:$L$] {};
+          \node [mygreen,fit=(s5) (s8),label=below:$L$] {};
           % the edges
-          \draw (f1) -- (s5);
-          \draw (f2) -- (s4);
-          \draw (f3) -- (s6);
+          \draw (f1) -- (s6);
+          \draw (f2) -- (s5);
+          \draw (f4) -- (s8);
         \end{tikzpicture}
       \end{figure}
     \end{column}%
   \end{columns}
+  \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
@@ -377,7 +449,8 @@
 \begin{frame}{Local Task Assignment}{3. Hungarain Algorithm}
   To compute an optimal matching of a robot with $N$ neighbors and $E$
   out-going edges of its role in the lattice graph, define a weight
-  matrix of size $N \times \max(N, E)$ and apply Hungarian Algorithm.
+  matrix of size $N \times \max(N, E)$ and apply
+  \textcolor{scred}{Hungarian Algorithm}.
     \begin{columns}[T] % align columns
       \begin{column}{.5\textwidth}
         \begin{enumerate}
@@ -427,7 +500,35 @@
 %%%%%%%%%%%%%%%%
 
 \begin{frame}{Robot Motion Control}{4. Robot Movements}
-
+  
+  \textcolor{scred}{\large 1. Root Robot: Does Not Move}
+  \begin{block}{2. Descendant Robot:}
+    \begin{figure}
+      \centering
+      \begin{tikzpicture}[
+        level 1/.style={sibling distance=40mm},
+        edge from parent/.style={->,draw},
+        >=latex]       
+        % root of the the initial tree, level 1
+        \node[root] {Descendant}
+        % The first level, as children of the initial tree
+        child {node[level 2] (c1) {Has matching with its parent}}
+        child {node[level 2] (c3) {Has no matching with its parent}};
+        % The second level, relatively positioned nodes
+        \begin{scope}[every node/.style={level 3}]
+          \node [below of = c1, xshift=10pt, yshift=-10pt] (c11) {Move towards its destination};
+          \node [below of = c11, yshift=-20pt] (c12) {Keep itself in the range of its parent};
+          \node [below of = c3, xshift=10pt, yshift=-10pt] (c31) {Move away from its parent};
+        \end{scope}
+        % lines from each level 1 node to every one of its "children"
+        \foreach \value in {1,2}
+        \draw[->] (c1.195) |- (c1\value.west);
+        \foreach \value in {1}
+        \draw[->] (c3.195) |- (c3\value.west);
+      \end{tikzpicture}
+    \end{figure}
+  \end{block}
+   
 \end{frame}
 %%%%%%%%%%%%%%%%
 \begin{frame}{Robot Motion Control}{4. Constraints: Bounded Movement Model}
@@ -445,7 +546,7 @@
           outline/.style={draw=circle edge, thick}}
         \tikzstyle{important line}=[very thick]
         % Set A and B
-        \begin{tikzpicture}[scale=0.7]
+        \begin{tikzpicture}[scale=0.65]
           \begin{scope}
             \clip \firstcircle;
             \fill[filled] \secondcircle;
@@ -516,7 +617,26 @@
 %  \setbeamercolor{frametitle}{use=structure,fg=structure.fg}
 %  \setbeamercolor{normal text}{bg=gray!20}
 \begin{frame}{Results}{}
-  
+   \begin{columns}[T] % align columns
+      \begin{column}{.48\textwidth}
+        \begin{figure}
+          \centering
+          \includegraphics[width=\textwidth]{figs/exptime}
+          \caption{Average execution time and its standard deviation
+            of forming repeated lattice patterns of square, hexagon
+            and octagon-square}
+        \end{figure}
+      \end{column}%
+      \begin{column}{.48\textwidth}
+        \begin{figure}
+          \centering
+          \includegraphics[width=\textwidth]{figs/expqual}
+          \caption{Average non-fulfillment ratio and its standard
+            deviation of forming lattice patterns of square, hexagon
+            and octagon-square.}
+        \end{figure}
+      \end{column}%
+    \end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
@@ -543,9 +663,8 @@
 \subsection{Contact Information}
 % contact information
 \begin{frame}{Questions}{}
-In case you have any comments, suggestions or have found a bug, please do not hesitate to contact me. You can find my contact details below.
   \begin{center}
-    {\LARGE THANK YOU!}
+    \textcolor{scred}{\LARGE $\mathscr{THANK}$ $\mathscr{YOU}!$}
   \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%
