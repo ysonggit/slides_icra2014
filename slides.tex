@@ -120,7 +120,7 @@
   \item {\textcolor{scred}{\large INPUT:}}\\
     Representations of various formation patterns.
   \item {\textcolor{scred}{\large OUTPUT:}}\\
-    Robot Control law.
+    Robot motion control.
   \item {\textcolor{scred}{\large WHAT DO WE EXPECT:}}\\
     Various formation patterns.
   \end{itemize}
@@ -133,13 +133,11 @@
 %     \begin{columns}[T] % align columns
 %       \begin{column}{.48\textwidth}
 %         \color{red}\rule{\linewidth}{4pt}
-
 %         Left Part
 %       \end{column}%
 %       \hfill%
 %       \begin{column}{.48\textwidth}
 %         \color{blue}\rule{\linewidth}{4pt}
-
 %         Right Part
 %       \end{column}%
 %     \end{columns}
@@ -147,16 +145,6 @@
 % \end{frame}
 
 %%%%%%%%%%%%%%%%
-
-% \begin{frame}{Introduction}{}
-%   \begin{block}{Prior Work}
-%   \begin{itemize}
-%     \item<1-> 
-%     \item<2-> 
-%   \end{itemize}
-% \end{block}
-% \end{frame}
-
 \begin{frame}{Robot Specifications}{}
 \begin{block}{}
   \begin{columns}[T] % align columns
@@ -265,28 +253,6 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Lattice Graph}
-    \begin{columns}[T] % align columns
-      \begin{column}{.5\textwidth}
-      
-      \end{column}%
-      \begin{column}{.5\textwidth}   
-        \begin{figure}
-          \begin{minipage}{\linewidth}
-            \centering
-          \includegraphics[scale=0.4]{figs/hex}
-          \end{minipage}
-          \vspace{2mm}
-          \begin{minipage}{\linewidth}
-            \centering
-          \includegraphics[scale=0.75]{figs/hexagonlattice}
-          \end{minipage}
-        \end{figure}
-       
-      \end{column}%
-    \end{columns}
-\end{frame}
-
 \subsection{Robot Authority}
 \begin{frame}{Authority}
   \begin{block}{}
@@ -339,7 +305,7 @@
   \begin{block}{The key idea to make our local strategy reach a global static
     state is the authority carried by each robot}
     \begin{columns}[T] % align columns
-      \begin{column}{.5\textwidth}
+      \begin{column}{.65\textwidth}
         \begin{itemize}
         \item Each robot chooses one of its neighbors to be its
           parent.
@@ -348,11 +314,33 @@
         \item Robots that select a parent are called
           \textbf{descendants} of that parent. 
         \end{itemize} 
+        \hrule
+        \begin{bclogo}[noborder=true, logo=\bccrayon]{} 
+          Robot $4$ is the \textcolor{red}{Root} robot\\
+          Robot $1$ is a descendant of Robot $4$\\
+          Robot $2$ is a descendant of Robot $1$
+        \end{bclogo}
+        \hrule
       \end{column}%
-      \begin{column}{.4\textwidth}
-        \color{blue}\rule{\linewidth}{4pt}
+      \begin{column}{.35\textwidth}
+        \begin{figure}[center]
+          \centering
+          \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
+            thick,main node/.style={circle,fill=red!20,draw,font=\sffamily\Large\bfseries}]
 
-        A figure illustrates the root, parent and descendants.
+            \node[main node] (1) {1}; 
+            \node[main node] (2) [below left of=1]
+            {2}; 
+            \node[main node] (4) [above left of=1] {4}; 
+            \tikzset{node distance=1cm} 
+            \node[draw] (11) [below of=1] {$\{4,1\}$}; 
+            \node[draw] (22) [below of=2] {$\{4,1,2\}$}; 
+            \node[draw] (44) [below of=4] {$\{4\}$}; 
+            \path[every node/.style={font=\sffamily\small}] 
+            (1) edge node[left] {} (2)            
+            (4) edge node[right] {} (1);
+          \end{tikzpicture}
+        \end{figure} 
       \end{column}%
     \end{columns}
    \end{block} 
@@ -516,14 +504,18 @@
         child {node[level 2] (c3) {Has no matching with its parent}};
         % The second level, relatively positioned nodes
         \begin{scope}[every node/.style={level 3}]
-          \node [below of = c1, xshift=10pt, yshift=-10pt] (c11) {Move towards its destination};
-          \node [below of = c11, yshift=-20pt] (c12) {Keep itself in the range of its parent};
-          \node [below of = c3, xshift=10pt, yshift=-10pt] (c31) {Move away from its parent};
+          \node [below of = c1, xshift=10pt, yshift=-10pt] (c11) {Move
+            towards its destination}; \node [below of = c11,
+          yshift=-20pt] (c12) {Keep itself in the range of its
+            parent}; \node [below of = c3, xshift=10pt, yshift=-10pt]
+          (c31) {Move away from its parent}; \node [below of = c31,
+          yshift=-20pt] (c32) { Discard any messages during
+            movements};
         \end{scope}
         % lines from each level 1 node to every one of its "children"
         \foreach \value in {1,2}
         \draw[->] (c1.195) |- (c1\value.west);
-        \foreach \value in {1}
+        \foreach \value in {1,2}
         \draw[->] (c3.195) |- (c3\value.west);
       \end{tikzpicture}
     \end{figure}
@@ -602,15 +594,95 @@
 
 
 \section{Results}
-\subsection{Experiments}
-% list of the themes and options
-\begin{frame}{Experiments}{}
+\begin{frame}{Simulation and Experiments}{}
   \begin{block}{}
-   
+     \begin{columns}[T] % align columns
+      \begin{column}{.48\textwidth}
+        \color{red}\rule{\linewidth}{4pt}
+        Left Part
+      \end{column}
+      \begin{column}{.48\textwidth}
+        \begin{figure}
+          \includegraphics[scale=0.45]{figs/initial-formation}
+          \caption{Initial uniform distribution of $100$ robots's
+            poses.}
+        \end{figure}
+      \end{column}%
+    \end{columns}
+  \end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%
+\begin{frame}{Simulation}
+  \begin{block}{Octagon-square formation with 100 robots}
+    \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+         \begin{figure}
+          \centering
+            \includegraphics[width=.95\linewidth]{figs/octagonsquare}
+          \end{figure}
+          \begin{center}
+            Lattice graph for repeated octagon-square pattern
+          \end{center}
+      \end{column}%
+      \begin{column}{.5\textwidth}   
+        \begin{figure}
+          \centering
+          \includegraphics[width=\linewidth]{figs/final-formation}
+        \end{figure}
+        \begin{center}
+          Final formation.
+        \end{center}
+      \end{column}%
+    \end{columns}
+  \end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Simulation}{}
+  \begin{block}{Hexagon formation with 100 robots}
+    \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+        \begin{figure}
+          \centering
+          \includegraphics[scale=0.5]{figs/hex}
+          \caption{Lattice graph for repeated hexagon pattern}
+        \end{figure}
+      \end{column}%
+      \begin{column}{.5\textwidth}   
+        \begin{figure}
+            \centering
+            \includegraphics[width=.9\linewidth]{figs/formation-100}
+            \caption{Final formation of repeated hexagon pattern with
+            100 robots.}
+        \end{figure}
+      \end{column}%
+    \end{columns}
   \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
+\begin{frame}{Experiments}{on three kinds of repeated
+lattice patterns}
+  \begin{block}{Experiments Setup}
+    \begin{itemize}
+    \item Keep a consistent velocity in all experiments
+    \item Varied the number of robots $n=50, 100, 150, 200, 250$
+    \item For each $n$, we repeated the experiment $50$ times
+    \item Initially all robots are uniformly distributed with distinct
+      random seeds each experiment
+    \item For robustness test, randomly remove some robots from or add
+      some robots to the system
+    \end{itemize}
+  \end{block}
+  \begin{block}{Measurements}
+    \begin{itemize}
+    \item Average execution time
+    \item Average non-fulfillment ratio: $\Gamma =
+      \dfrac{1}{n}\sum\limits_{i=1}^n \frac{E_i - N_i}{E_i}$
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%
 % how to modify the theme
 % {\setbeamercolor{AAUsimple}{fg=gray!50,bg=orange!50}
 %  \setbeamercolor{structure}{fg=red}
@@ -643,24 +715,27 @@
 \subsection{Conclusions}
 % Widescreen Support
 \begin{frame}{Conclusions}{}
-\begin{block}{}
-   
+\begin{block}{Pros of the Algorithm}
+  \begin{itemize}
+  \item robots can form different types of geometric formations,
+including the repeated lattice patterns
+  \item scales reasonably well with increasing numbers of robot
+  \item robust to the situation when some robots are removed from or
+with more robots added to the system
+  \end{itemize}
+\end{block}
+\begin{block}{Cons of the Algorithm}
+  \begin{itemize}
+  \item no collision avoidance for motion strategy
+  \item limited on the multi-robot systems subject to the nonholonomic
+    constraints
+  \end{itemize}
 \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
 
-\section{Feedback}
-%\subsection{Known Problems}
-%% known problems
-%\begin{frame}{Feedback}{Known Problems}
-%  \begin{description}
-%    \item[Overlapping footnote] You might have problems with a too wide footnote text width. This is problem with older versions of Beamer, and it can be resolved by updating Beamer to a newer version. You can read more about it in \chref{https://bitbucket.org/rivanvx/beamer/issue/200/width-of-footnote-in-a-sidebar-theme}{this bugreport}.
-%  \end{description}
-%\end{frame}
-%%%%%%%%%%%%%%%%%
-
-\subsection{Contact Information}
+\subsection{Questions}
 % contact information
 \begin{frame}{Questions}{}
   \begin{center}
