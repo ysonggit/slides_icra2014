@@ -42,11 +42,16 @@
 }
 % tikz setup for lattice graph
 \usepackage{pgf}
-\usetikzlibrary{arrows,automata}
+\usetikzlibrary{automata}
 \usepackage{hyperref}
 \hypersetup{pdfpagemode=FullScreen}
 \usepackage{ifthen}
 \usepackage{animate}
+
+% tikz animation
+\usetikzlibrary{arrows,decorations.pathmorphing,through,backgrounds,positioning,fit,petri}
+\usetikzlibrary{shapes.multipart}
+\usetikzlibrary{decorations.pathreplacing}
 
 \usepackage[tikz]{bclogo}
 
@@ -104,7 +109,6 @@
   \titlepage
 \end{frame}
 %%%%%%%%%%%%%%%%
-
 % TOC
 % \begin{frame}{Agenda}{}
 % \tableofcontents
@@ -112,7 +116,7 @@
 %%%%%%%%%%%%%%%%
 
 \section{Introduction}
-\begin{frame}{Motivation}{}
+\begin{frame}{Contribution}{}
 \begin{block}{}
   \begin{itemize}
   \item {\textcolor{scred}{\large WHAT DO WE HAVE:}}\\
@@ -148,8 +152,9 @@
 \begin{frame}{Robot Specifications}{}
 \begin{block}{}
   \begin{columns}[T] % align columns
-      \begin{column}{.5\textwidth}
+      \begin{column}{.55\textwidth}
         \begin{itemize}
+        \item Holonomic or Differential Drive robots.
         \item Each robot has an unique \textbf{ID}.
         \item Each robot has three states, use a vector $p = [x, y,
           \theta]^T$ to represent its \textbf{pose}.
@@ -160,7 +165,7 @@
         \end{itemize}
       \end{column}%
       % right column
-      \begin{column}{.4\textwidth}
+      \begin{column}{.45\textwidth}
         \begin{figure}
           \centering
           \begin{tikzpicture}[scale=0.55]
@@ -326,16 +331,16 @@
         \begin{figure}[center]
           \centering
           \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
-            thick,main node/.style={circle,fill=red!20,draw,font=\sffamily\Large\bfseries}]
+            thick,main node/.style={circle,fill=red!20,draw,font=\sffamily\Large}]
 
             \node[main node] (1) {1}; 
             \node[main node] (2) [below left of=1]
             {2}; 
             \node[main node] (4) [above left of=1] {4}; 
             \tikzset{node distance=1cm} 
-            \node[draw] (11) [below of=1] {$\{4,1\}$}; 
-            \node[draw] (22) [below of=2] {$\{4,1,2\}$}; 
-            \node[draw] (44) [below of=4] {$\{4\}$}; 
+            \node (11) [below of=1] {$\{4,1\}$}; 
+            \node (22) [below of=2] {$\{4,1,2\}$}; 
+            \node (44) [right of=4] {$\{4\}$}; 
             \path[every node/.style={font=\sffamily\small}] 
             (1) edge node[left] {} (2)            
             (4) edge node[right] {} (1);
@@ -347,30 +352,72 @@
 \end{frame}
 
 \begin{frame}{Construct Authority Tree}{1. Decide to be root or descendant}
-  \begin{block}{The robots use these authorities to establish a collection of
-  authority trees}
+  \begin{block}{The robots use these authorities to establish a
+      collection of authority trees}
+    \begin{enumerate}
+    \item Discards any message in which the authority contains its
+      own ID.
+    \item Forms an authority containing only its own ID,
+      compares it with the authorities of remaining messages and
+      selects the highest authority.
+    \end{enumerate} 
   \begin{columns}[T] % align columns
     \begin{column}{.55\textwidth}
-        \begin{enumerate}
-        \item Discards any message in which the authority contains its
-          own ID.
-        \item Forms an authority containing only its own ID,
-          compares it with the authorities of remaining messages and
-          selects the highest authority.
-          \begin{itemize}
-          \item If its authority is the highest, then it is
-            the \textcolor{red}{root};
-          \item Otherwise, it selects the one who sends the highest
-            authority as its parent. Append its own ID to the highest
-            authority to create its own authority. 
-          \end{itemize} 
-        \end{enumerate} 
+      \begin{itemize}
+      \item If its authority is the highest, then it is
+        the \textcolor{red}{root};
+      \item Otherwise, it selects the one who sends the highest
+        authority as its parent. Append its own ID to the highest
+        authority to create its own authority. 
+      \end{itemize}     
     \end{column}%
     \begin{column}{.45\textwidth}
-      \color{blue}\rule{\linewidth}{4pt}
-
-      Animation showing the steps
-    \end{column}%
+      \begin{animateinline}[
+        begin={%
+          \begin{tikzpicture}%
+            [demand/.style={circle, fill=red!20!white, font=\tiny, text centered},%
+            post/.style={->,>=stealth', thin, draw=black!50},
+            node/.style={circle,fill=red!20,draw,font=\sffamily\small}]%
+            \useasboundingbox (-0.5,-0.5) rectangle (3.5,3);
+          },
+          end={\end{tikzpicture}}
+        ]{10}
+        \node (b) at (1,0) [demand]  {4}; 
+        \node (d) at (3,0) [demand]  {2};
+        \node (c) at (3,2) [demand]  {3};
+        \node (4) [above of=b] {(4)};
+        \node (2) [above left of=d] {(2)};
+        \node (3) [left of=c] {(3)};
+        \newframe*
+        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ %-->(PRD)
+          \node (b) at (1,0) [demand]  {4}; 
+          \node (d) at (3,0) [demand]  {2};
+          \node (c) at (3,2) [demand]  {3};
+          \path (b.east) -- (d.west) node[pos=\rP] (q){};
+          \draw[post] (b.east) -- (q.west);
+          \node (4) [above of=b] {(4)};
+          \node (2) [above left of=d] {(4,2)};
+          \node (3) [left of=c] {(3)};
+          % \path (d.north) -- (c.south) node[pos=\rP] (p){};
+          % \draw[post] (d.north) -- (p.south);
+        }
+        \newframe*
+        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ %-->(PSD)
+          \node (b) at (1,0) [demand]  {4}; 
+          \node (d) at (3,0) [demand]  {2};
+          \node (c) at (3,2) [demand]  {3};
+          % \path (b.east) -- (d.west) node[pos=\rP] (q){};
+          % \draw[post] (b.east) -- (q.west);
+          % \path (A) edge [loop above] node {Tr(0, 40)} (A)
+          \path (b.east) edge (d.west);
+          \path (d.north) -- (c.south) node[pos=\rP] (p){};
+          \draw[post] (d.north) -- (p.south);
+          \node (4) [above of=b] {(4)};
+          \node (2) [above left of=d] {(4,2)};
+          \node (3) [left of=c] {(4,2,3)};
+        }
+      \end{animateinline}
+    \end{column}
   \end{columns}
 \end{block}
 \end{frame}
