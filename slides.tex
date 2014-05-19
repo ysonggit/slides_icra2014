@@ -331,7 +331,7 @@
         \begin{figure}[center]
           \centering
           \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
-            thick,main node/.style={circle,fill=red!20,draw,font=\sffamily\Large}]
+            thick,main node/.style={circle,fill=red!20,draw,font=\sffamily}]
 
             \node[main node] (1) {1}; 
             \node[main node] (2) [below left of=1]
@@ -375,26 +375,36 @@
       \begin{animateinline}[
         begin={%
           \begin{tikzpicture}%
-            [demand/.style={circle, fill=red!20!white, font=\tiny, text centered},%
+            [demand2/.style={circle, fill=red!20!white, font=\tiny,
+              text centered},%
+            demand4/.style={circle, fill=green!20!white, font=\tiny,
+              text centered},
+            demand3/.style={circle, fill=blue!20!white, font=\tiny, text centered},
             post/.style={->,>=stealth', thin, draw=black!50},
             node/.style={circle,fill=red!20,draw,font=\sffamily\small}]%
             \useasboundingbox (-0.5,-0.5) rectangle (3.5,3);
           },
           end={\end{tikzpicture}}
         ]{10}
-        \node (b) at (1,0) [demand]  {4}; 
-        \node (d) at (3,0) [demand]  {2};
-        \node (c) at (3,2) [demand]  {3};
+        \draw[red] (3,0) circle (2);  % color for 2: red
+        \draw[green] (1,0) circle (2);   % color for 4: green
+        \draw[blue] (3,2) circle (2);    % color for 3: blue
+        \node (b) at (1,0) [demand4]  {4}; 
+        \node (d) at (3,0) [demand2]  {2};
+        \node (c) at (3,2) [demand3]  {3};
         \node (4) [above of=b] {(4)};
         \node (2) [above left of=d] {(2)};
         \node (3) [left of=c] {(3)};
         \newframe*
-        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ %-->(PRD)
-          \node (b) at (1,0) [demand]  {4}; 
-          \node (d) at (3,0) [demand]  {2};
-          \node (c) at (3,2) [demand]  {3};
-          \path (b.east) -- (d.west) node[pos=\rP] (q){};
-          \draw[post] (b.east) -- (q.west);
+        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ 
+          \draw[red] (3,0) circle (2);
+          \draw[green] (1,0) circle (2);
+          \draw[blue] (3,2) circle (2);
+          \node (b) at (1,0) [demand4]  {4}; 
+          \node (d) at (3,0) [demand2]  {2};
+          \node (c) at (3,2) [demand3]  {3};
+          % \path (b.east) -- (d.west) node[pos=\rP] (q){};
+          % \draw[post] (b.east) -- (q.west);
           \node (4) [above of=b] {(4)};
           \node (2) [above left of=d] {(4,2)};
           \node (3) [left of=c] {(3)};
@@ -402,14 +412,32 @@
           % \draw[post] (d.north) -- (p.south);
         }
         \newframe*
-        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ %-->(PSD)
-          \node (b) at (1,0) [demand]  {4}; 
-          \node (d) at (3,0) [demand]  {2};
-          \node (c) at (3,2) [demand]  {3};
+        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ 
+          \draw[red] (3,0) circle (2);
+          \draw[green] (1,0) circle (2);
+          \draw[blue] (3,2) circle (2);
+          \node (b) at (1,0) [demand4]  {4}; 
+          \node (d) at (3,0) [demand2]  {2};
+          \node (c) at (3,2) [demand3]  {3};
           % \path (b.east) -- (d.west) node[pos=\rP] (q){};
           % \draw[post] (b.east) -- (q.west);
-          % \path (A) edge [loop above] node {Tr(0, 40)} (A)
-          \path (b.east) edge (d.west);
+          \node (4) [above of=b] {(4)};
+          \node (2) [above left of=d] {(4,2)};
+          \node (3) [left of=c] {(4,2,3)};
+          % \path (d.north) -- (c.south) node[pos=\rP] (p){};
+          % \draw[post] (d.north) -- (p.south);
+        }
+        \newframe*
+        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ %-->(PSD)
+          \draw[red] (3,0) circle (2);
+          \draw[green] (1,0) circle (2);
+          \draw[blue] (3,2) circle (2);
+          \node (b) at (1,0) [demand4]  {4}; 
+          \node (d) at (3,0) [demand2]  {2};
+          \node (c) at (3,2) [demand3]  {3};
+          \path (b.east) -- (d.west) node[pos=\rP] (q){};
+          \draw[post] (b.east) -- (q.west);
+          %\path (b.east) edge (d.west);%%% edge without arrow
           \path (d.north) -- (c.south) node[pos=\rP] (p){};
           \draw[post] (d.north) -- (p.south);
           \node (4) [above of=b] {(4)};
@@ -641,65 +669,72 @@
 
 
 \section{Results}
-\begin{frame}{Simulation and Experiments}{}
-  \begin{block}{}
-     \begin{columns}[T] % align columns
-      \begin{column}{.48\textwidth}
-        \color{red}\rule{\linewidth}{4pt}
-        Left Part
-      \end{column}
-      \begin{column}{.48\textwidth}
-        \begin{figure}
-          \includegraphics[scale=0.45]{figs/initial-formation}
-          \caption{Initial uniform distribution of $100$ robots's
-            poses.}
-        \end{figure}
-      \end{column}%
-    \end{columns}
-  \end{block}
-\end{frame}
+% \begin{frame}{Simulation and Experiments}{}
+%   \begin{block}{}
+%      \begin{columns}[T] % align columns
+%       \begin{column}{.48\textwidth}
+%         \color{red}\rule{\linewidth}{4pt}
+%         Left Part
+%       \end{column}
+%       \begin{column}{.48\textwidth}
+%         \begin{figure}
+%           \includegraphics[scale=0.45]{figs/initial-formation}
+%           \caption{Initial uniform distribution of $100$ robots's
+%             poses.}
+%         \end{figure}
+%       \end{column}%
+%     \end{columns}
+%   \end{block}
+% \end{frame}
 %%%%%%%%%%%%%%%%
-\begin{frame}{Simulation}
-  \begin{block}{Octagon-square formation with 100 robots}
+\begin{frame}{Simulation}{Octagon-square formation with 100 robots}
+  \begin{block}{}
     \begin{columns}[T] % align columns
       \begin{column}{.5\textwidth}
          \begin{figure}
           \centering
-            \includegraphics[width=.95\linewidth]{figs/octagonsquare}
+           % \includegraphics[width=.95\linewidth]{figs/octagonsquare}
+            \includegraphics[scale=0.45]{figs/initial-formation}
+            \caption{Initial uniform distribution of $100$ robots's
+             poses.}
           \end{figure}
           \begin{center}
-            Lattice graph for repeated octagon-square pattern
+            %Lattice graph for repeated octagon-square pattern
           \end{center}
       \end{column}%
       \begin{column}{.5\textwidth}   
         \begin{figure}
           \centering
           \includegraphics[width=\linewidth]{figs/final-formation}
+          %\includegraphics[width=.9\linewidth]{figs/formation-100}
+          \caption{Final formation of repeated octagon-square pattern.}
         \end{figure}
         \begin{center}
-          Final formation.
+%          Final formation.
         \end{center}
       \end{column}%
     \end{columns}
   \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Simulation}{}
-  \begin{block}{Hexagon formation with 100 robots}
+\begin{frame}{Simulation}{Hexagon formation with 100 robots}
+  \begin{block}{}
     \begin{columns}[T] % align columns
       \begin{column}{.5\textwidth}
         \begin{figure}
           \centering
-          \includegraphics[scale=0.5]{figs/hex}
-          \caption{Lattice graph for repeated hexagon pattern}
+          %\includegraphics[scale=0.5]{figs/hex}
+          %\caption{Lattice graph for repeated hexagon pattern}
+          \includegraphics[scale=0.45]{figs/initial-formation}
+          \caption{Initial uniform distribution of $100$ robots's
+            poses.}
         \end{figure}
       \end{column}%
       \begin{column}{.5\textwidth}   
         \begin{figure}
             \centering
-            \includegraphics[width=.9\linewidth]{figs/formation-100}
-            \caption{Final formation of repeated hexagon pattern with
-            100 robots.}
+            \includegraphics[width=0.85\linewidth]{figs/formation-100}
+            \caption{Final formation of repeated hexagon pattern.}
         \end{figure}
       \end{column}%
     \end{columns}
