@@ -1,6 +1,7 @@
 #!/bin/bash
 
 pdflatex slides.tex &&
+pdflatex slides.tex &&
 rm *.aux &&
 rm *.log &&
 rm *.nav &&
