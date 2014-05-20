@@ -1,3 +1,4 @@
+% use pdflatex -shell-escape slides.tex to compile
 \documentclass[10pt]{beamer}
 \usetheme[
 %%% options passed to the outer theme
@@ -15,7 +16,8 @@
 % Change the normal text color background:
 %\setbeamercolor{normal text}{fg=black,bg=gray!10}
 % ... and you can of course change a lot more - see the beamer user manual.
-
+\usepackage{epstopdf}
+\usepackage{movie15}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
@@ -118,16 +120,26 @@
 \section{Introduction}
 \begin{frame}{Contribution}{}
 \begin{block}{}
-  \begin{itemize}
-  \item {\textcolor{scred}{\large WHAT DO WE HAVE:}}\\
-    Given a set of autonomous robots, each robot knows its local information.
-  \item {\textcolor{scred}{\large INPUT:}}\\
-    Representations of various formation patterns.
-  \item {\textcolor{scred}{\large OUTPUT:}}\\
-    Robot motion control.
-  \item {\textcolor{scred}{\large WHAT DO WE EXPECT:}}\\
-    Various formation patterns.
-  \end{itemize}
+  \begin{columns}[T] % align columns
+    \begin{column}{.48\textwidth}
+      \begin{itemize}
+      \item {\textcolor{scred}{\large WHAT DO WE HAVE:}}\\
+        Given a set of autonomous robots, each robot knows its local information.
+      \item {\textcolor{scred}{\large INPUT:}}\\
+        Representations of various formation patterns.
+      \item {\textcolor{scred}{\large OUTPUT:}}\\
+        Robot motion control.
+      \item {\textcolor{scred}{\large WHAT DO WE EXPECT:}}\\
+        Various formation patterns.
+      \end{itemize}
+    \end{column}%
+    \begin{column}{.48\textwidth}
+      \begin{figure}
+        \includemovie[poster,autoplay]{4cm}{4cm}{video.mp4}
+      \end{figure}
+    \end{column}%
+  \end{columns}
+  
 \end{block}
 \end{frame}
 % motivation 
