@@ -246,7 +246,7 @@
           \item The edge length is $40$. 
           \item For a robot playing the role of this node, its
             neighbors should be in locations $(40, 0), (0, -40), (-40,
-            0)$ and $(0, 40)$.
+            0)$ and $(0, 40)$ (local frame).
           \end{itemize}
         \end{block}
       \end{column}%
@@ -279,7 +279,7 @@
       $$ \langle \id_1, \ldots, \id_k \rangle $$
       The first ID in the list, $\id_1$ is called the \textbf{root} ID.
       Likewise, the final ID in the list, $\id_k$ is called the
-      \textbf{sender} ID.  The number $k$ of IDs in the list is called
+      \textbf{sender} ID.  The number of IDs in the list is called
       its \textbf{length}.
     \end{bclogo}
   \end{block}
@@ -292,34 +292,7 @@
   \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
-
-\subsection{Algorithm}
-\begin{frame}{Algorithm}
-  \begin{block}{General Algorithm Description}
-    \begin{enumerate}
-    \item<1-> Each robot decides whether to be a \textcolor{red}{root}
-      robot or a \textcolor{blue}{descendant} robot based on ``authority''.
-      
-    \item<2-> Each robot chooses a \textcolor{purple}{role}. 
-      \begin{itemize}
-      \item \textcolor{red}{Root} robots always select the
-        first lattice vertex as their role.  
-      \item \textcolor{blue}{Descendant} robots accept
-        their roles as from their parents.
-      \end{itemize}    
-      
-    \item<3-> Each robot computes a local task assignment for
-      its neighbors and broadcasts this assignment to its neighbors.
-      
-    \item<4-> Each \textcolor{blue}{descendant} robot moves toward to
-      position assigned by its parent.
-    \end{enumerate}
-  \end{block}
-\end{frame}
-%%%%%%%%%%%%%%%%
-
-% help me iron out the bugs or give me some comment and suggestions
-\begin{frame}{Construct Authority Tree}{1. Decide to be root or descendant}
+\begin{frame}{Authority Tree}{}
   \begin{block}{The key idea to make our local strategy reach a global static
     state is the authority carried by each robot}
     \begin{columns}[T] % align columns
@@ -333,7 +306,7 @@
           \textbf{descendants} of that parent. 
         \end{itemize} 
         \hrule
-        \begin{bclogo}[noborder=true, logo=\bccrayon]{} 
+        \begin{bclogo}[noborder=true, logo=\bccrayon]{Example} 
           Robot $4$ is the \textcolor{red}{Root} robot\\
           Robot $1$ is a descendant of Robot $4$\\
           Robot $2$ is a descendant of Robot $1$
@@ -364,6 +337,33 @@
    \end{block} 
 \end{frame}
 
+
+\subsection{Algorithm}
+\begin{frame}{Algorithm}
+  \begin{block}{General Algorithm Description}
+    \begin{enumerate}
+    \item<1-> Each robot decides whether to be a \textcolor{red}{root}
+      robot or a \textcolor{blue}{descendant} robot based on ``authority''.
+      
+    \item<2-> Each robot chooses a \textcolor{purple}{role}. 
+      \begin{itemize}
+      \item \textcolor{red}{Root} robots always select the
+        first lattice vertex as their role.  
+      \item \textcolor{blue}{Descendant} robots accept
+        their roles as from their parents.
+      \end{itemize}    
+      
+    \item<3-> Each robot computes a local task assignment for
+      its neighbors and broadcasts this assignment to its neighbors.
+      
+    \item<4-> Each \textcolor{blue}{descendant} robot moves toward to
+      the destination computed according to the assignment of its parent.
+    \end{enumerate}
+  \end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%
+
+% help me iron out the bugs or give me some comment and suggestions
 \begin{frame}{Construct Authority Tree}{1. Decide to be root or descendant}
   \begin{block}{The robots use these authorities to establish a
       collection of authority trees}
