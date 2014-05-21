@@ -59,7 +59,7 @@
 
 \newcommand{\id}{{\rm id}}
 \newcommand{\edge}[3]{{#1}\overset{#2}{\longrightarrow}{#3}}
-
+\renewcommand{\L}{{\Lambda}}
 % colored hyperlinks
 \newcommand{\chref}[2]{%
   \href{#1}{{\usebeamercolor[bg]{AAUsimple}#2}}%
@@ -122,30 +122,14 @@
 \begin{block}{}
   \begin{columns}[T] % align columns
     \begin{column}{.5\textwidth}
-       \includemovie[toolbar,poster,autoplay]{4.5cm}{4.5cm}{square.mp4}
-      %% \begin{itemize}
-      %% \item {\textcolor{scred}{\large WHAT DO WE HAVE:}}\\
-      %%   Given a set of autonomous robots, each robot knows its local information.
-      %% \item {\textcolor{scred}{\large INPUT:}}\\
-      %%   Representations of various formation patterns.
-      %% \item {\textcolor{scred}{\large OUTPUT:}}\\
-      %%   Robot motion control.
-      %% \item {\textcolor{scred}{\large WHAT DO WE EXPECT:}}\\
-      %%   Various formation patterns.
-      %% \end{itemize}
+      \includemovie[toolbar,poster,autoplay]{4.5cm}{4.5cm}{square10.mp4}
     \end{column}%
     \begin{column}{.5\textwidth}
-      %% \begin{figure}
-      \includemovie[toolbar,poster,autoplay]{4.5cm}{4.5cm}{hexagon.mp4}
-      %% \end{figure}
-      %\movie[externalviewer]{\beamergotobutton{Start movie}}{video.mp4}
+      \includemovie[toolbar,poster,autoplay]{4.5cm}{4.5cm}{hexagon10.mp4}
     \end{column}%
-  \end{columns}
-  
+  \end{columns} 
 \end{block}
 \end{frame}
-% motivation 
-
 % \begin{frame}{Related Work}{}
 %   \begin{block}{}
 %     \begin{columns}[T] % align columns
@@ -164,14 +148,14 @@
 
 %%%%%%%%%%%%%%%%
 \begin{frame}{Robot Specifications}{}
-\begin{block}{}
+%\begin{block}{}
   \begin{columns}[T] % align columns
       \begin{column}{.55\textwidth}
         \begin{itemize}
         \item Holonomic or Differential Drive robots.
         \item Each robot has an unique \textbf{ID}.
-        \item Each robot has three states, use a vector $p = [x, y,
-          \theta]^T$ to represent its \textbf{pose}.
+        \item Use a vector $p = [x, y,
+          \theta]^T$ to represent robot's \textbf{pose}.
         \item Each robot has a \textbf{range} within which it can
           sense and communicate with other robots.
         \item Each robot gets \textbf{observation} of its neighbors'
@@ -183,78 +167,38 @@
         \begin{figure}
           \centering
           \begin{tikzpicture}[scale=0.55]
-            \draw[violet, fill=violet!10] (3, 3) circle (3.2);
+            \draw[dotted, violet, fill=violet!10] (3, 3) circle (3.2);
             \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)   	-- cycle;
-            \node[color=red] at (3, 2.5) {$r_i$};
-            
-            \draw[color=red, dashed, ->] (1.5,1.5) -- (4.5,4.5) node[right] {$X^{(i)}$};
-            \draw[color=red, dashed, ->] (4.5,1.5) -- (1.5,4.5) node[above] {$Y^{(i)}$};
-            
+            \node[color=red] at (3, 2.3) {$r_i$};           
             \draw[fill=blue!50] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) -- (0.67,4) 	-- cycle;
-            \node[color=blue] at (0.5,3.75) {$r_c$};
             \draw[fill=blue!50] (4,5) -- (3.75,5.5) -- (3.75,5.25) -- (3.5,5.25)   	-- cycle;
-            \node[color=blue] at (3.5,5.7) {$r_f$};
-            \draw[fill=blue!50] (1,2.5) -- (1.25,2) -- (1.25,2.25) -- (1.5,2.25)   	-- cycle;
-            \node[color=blue] at (1.2,1.7) {$r_e$};
+            \draw[fill=blue!50] (1,1.5) -- (1.25,1) -- (1.25,1.25) -- (1.5,1.25)   	-- cycle;
             \draw[fill=blue!50] (5,2.92) -- (4.5,2.75) -- (5,2.58) -- (4.875,2.75)  -- cycle;
-            \node[color=blue] at (5.4,2.75) {$r_d$};
-            % \draw[fill=blue!50] (-0.5,2.5) -- (-0.5,2.75) -- (-0.75,2.25) -- (-0.25,2.5)  -- cycle;
-            % \node[color=blue] at (-0.75,3) {$r_b$};
+            \draw[fill=green!50] (-0.5,0.5) -- (-0.5,0.75) -- (-0.75,0.25) -- (-0.25,0.5)  -- cycle;
           \end{tikzpicture}
-          \caption{Robot $r_i$ and its neighbors $r_c, r_d, r_e,
-            r_f$ in its local $X^{(i)}$-$Y^{(i)}$ coordinates. The
-            disk describes $r_i$'s range.}
-          \label{fig:robotmodel}
         \end{figure}
+        \begin{center}
+          The disk describes Robot $r_i$'s range, it has
+          four neighbors
+        \end{center}
       \end{column}%
     \end{columns}
-\end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
 \section{Lattice Graph}
 % definition of lattice graph
 \begin{frame}{Lattice Graph}
-    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{Definition}
+    \begin{bclogo}[logo=\bccrayon, couleur=orange!10, arrondi=0.2, ombre=true]{Definition}
       A \textbf{lattice graph} is a strongly connected directed
       multigraph in which each edge $e$ is labeled with a rigid body
       transformation $T(e)$ and each $\edge{v}{T(e)}{w}$ has an
       inverse edge $\edge{w}{T(e)^{-1}}{v}$.  
     \end{bclogo}
-    \begin{block}{}
-%    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{} 
-      Given a lattice graph $G=(V, E)$ and a set of robots $R = \{
-      r_1, \ldots, r_n \}$, we say that $R$ \textbf{satisfies} $G$ if
-      there exists a role function $f: R \rightarrow V$ that preserves
-      the neighborhood structure of $G$.
-      % 
-      Specifically, for any $i$ and $j$, if $r_i$ and $r_j$ are neighbors, 
-      there must exist an edge
-      $e_{ij}: \edge{f(r_i)}{}{f(r_j)}$ in $E$, such that
-      $$ T(r_j) = T(r_i) T(e_{ij})$$
- %   \end{bclogo}
-  \end{block}
-\end{frame}
-
-\begin{frame}{Lattice Graph}
     \begin{columns}[T] % align columns
-      \begin{column}{.6\textwidth}
-        \begin{block}{Example: lattice graph for repeated square patterns}
-        \begin{itemize}
-          \item  There is one node with four outgoing edges connecting to itself. 
-          \item Each edge is associated with a translation $Tr(x, y)$
-            of position $(x, y)$ relative to the current node.
-          \item The edge length is $40$. 
-          \item For a robot playing the role of this node, its
-            neighbors should be in locations $(40, 0), (0, -40), (-40,
-            0)$ and $(0, 40)$ (local frame).
-          \end{itemize}
-        \end{block}
-      \end{column}%
-      \begin{column}{.4\textwidth}
+      \begin{column}{.5\textwidth}
         \begin{figure}
           \centering
-          % \includegraphics[scale=0.45]{figs/sq}
           \begin{tikzpicture}[->,>=stealth',shorten >=5pt,auto,node distance=1cm,semithick]
             \tikzstyle{every state}=[fill=scred,draw=none, text=white]
             \node[state, scale=0.6] (A)         {$0$};
@@ -264,6 +208,8 @@
                       edge [loop right] node {Tr(40, 0)} (A);
           \end{tikzpicture}
         \end{figure}
+      \end{column}%
+      \begin{column}{.5\textwidth}
         \begin{figure}
           \centering
           \includegraphics[scale=1]{figs/squarelattice}
@@ -272,26 +218,82 @@
     \end{columns}
 \end{frame}
 
-\subsection{Robot Authority}
-\begin{frame}{Authority}
-  \begin{block}{}
-    \begin{bclogo}[couleur=orange!10, arrondi=0.2, ombre=true]{Definition} 
-      An \textbf{authority} is an ordered list of robot IDs
-      $$ \langle \id_1, \ldots, \id_k \rangle $$
-      The first ID in the list, $\id_1$ is called the \textbf{root} ID.
-      Likewise, the final ID in the list, $\id_k$ is called the
-      \textbf{sender} ID.  The number of IDs in the list is called
-      its \textbf{length}.
-    \end{bclogo}
-  \end{block}
-  \begin{block}{Each robot broadcasts messages to its neighbors.}
-    A message contains:\\
-  \begin{itemize}
-    \item The robot's authority.
-    \item The robot's matching.
-  \end{itemize}
+\begin{frame}{Lattice Graph}
+  \hrule
+  \begin{bclogo}[noborder=true, logo=\bccrayon]{} 
+    Given a lattice graph $G=(V, E)$ and a set of robots $R = \{
+    r_1, \ldots, r_n \}$, we say that $R$ \textbf{satisfies} $G$ if
+    there exists a role function $f: R \rightarrow V$ that preserves
+    the neighborhood structure of $G$.
+    % 
+    Specifically, for any $i$ and $j$, if $r_i$ and $r_j$ are neighbors, 
+    there must exist an edge
+    $e_{ij}: \edge{f(r_i)}{}{f(r_j)}$ in $E$, such that
+    $$ T(r_j) = T(r_i) T(e_{ij})$$
+  \end{bclogo}
+  \hrule 
+  \begin{columns}[T] 
+    \begin{column}{.5\textwidth}
+
+    \end{column}%
+    \begin{column}{.5\textwidth}
+      \begin{figure}
+        \centering
+        
+      \end{figure}
+    \end{column}%
+  \end{columns}
+\end{frame}
+
+
+\subsection{Algorithm}
+\begin{frame}{Algorithm}
+  \begin{block}{General Algorithm Description}
+    \begin{enumerate}
+    \item<1-> Each robot decides whether to be a \textcolor{red}{root}
+      robot or a \textcolor{blue}{descendant} robot based on ``authority''.
+      
+    \item<2-> Each robot chooses a \textcolor{purple}{role}. 
+      \begin{itemize}
+      \item \textcolor{red}{Root} robots always select the
+        first lattice vertex as their role.  
+      \item \textcolor{blue}{Descendant} robots accept
+        their roles as from their parents.
+      \end{itemize}    
+      
+    \item<3-> Each robot computes a local task assignment for
+      its neighbors and broadcasts this assignment to its neighbors.
+      
+    \item<4-> Each \textcolor{blue}{descendant} robot moves toward to
+      the destination computed according to the assignment of its parent.
+    \end{enumerate}
   \end{block}
 \end{frame}
+%%%%%%%%%%%%%%%%
+\subsection{Robot Authority}
+\begin{frame}{Authority}
+  \begin{bclogo}[logo=\bccrayon,couleur=orange!10, arrondi=0.2,
+    ombre=true]{Definition}
+    An \textbf{authority} is an ordered list of robot IDs
+    $$(\id_1, \ldots, \id_k) $$
+    The first ID in the list, $\id_1$ is called the \textbf{root} ID.
+    Likewise, the final ID in the list, $\id_k$ is called the
+    \textbf{sender} ID.  The number of IDs in the list is called
+    its \textbf{length}.
+  \end{bclogo}
+  \begin{block}{Define a comparison operator for authorities}
+    Authority $A_2$ is \textbf{higher than} $A_1$ if:
+    \begin{itemize}
+    \item \small{root ID of $A_2 >$ root ID of $A_1$, or}
+    \item \small{length of $A_2 <$  length of $A_1$ if they have the same root, or}
+    \item \small{sender ID of $A_2 >$ sender ID of $A_1$ if they have the same
+    root and length }
+  \end{itemize}
+
+       
+  \end{block}
+\end{frame}
+
 %%%%%%%%%%%%%%%%
 \begin{frame}{Authority Tree}{}
   \begin{block}{The key idea to make our local strategy reach a global static
@@ -337,32 +339,6 @@
     \end{columns}
    \end{block} 
 \end{frame}
-
-
-\subsection{Algorithm}
-\begin{frame}{Algorithm}
-  \begin{block}{General Algorithm Description}
-    \begin{enumerate}
-    \item<1-> Each robot decides whether to be a \textcolor{red}{root}
-      robot or a \textcolor{blue}{descendant} robot based on ``authority''.
-      
-    \item<2-> Each robot chooses a \textcolor{purple}{role}. 
-      \begin{itemize}
-      \item \textcolor{red}{Root} robots always select the
-        first lattice vertex as their role.  
-      \item \textcolor{blue}{Descendant} robots accept
-        their roles as from their parents.
-      \end{itemize}    
-      
-    \item<3-> Each robot computes a local task assignment for
-      its neighbors and broadcasts this assignment to its neighbors.
-      
-    \item<4-> Each \textcolor{blue}{descendant} robot moves toward to
-      the destination computed according to the assignment of its parent.
-    \end{enumerate}
-  \end{block}
-\end{frame}
-%%%%%%%%%%%%%%%%
 
 % help me iron out the bugs or give me some comment and suggestions
 \begin{frame}{Construct Authority Tree}{1. Decide to be root or descendant}
@@ -683,76 +659,16 @@
 
 
 \section{Results}
-% \begin{frame}{Simulation and Experiments}{}
-%   \begin{block}{}
-%      \begin{columns}[T] % align columns
-%       \begin{column}{.48\textwidth}
-%         \color{red}\rule{\linewidth}{4pt}
-%         Left Part
-%       \end{column}
-%       \begin{column}{.48\textwidth}
-%         \begin{figure}
-%           \includegraphics[scale=0.45]{figs/initial-formation}
-%           \caption{Initial uniform distribution of $100$ robots's
-%             poses.}
-%         \end{figure}
-%       \end{column}%
-%     \end{columns}
-%   \end{block}
-% \end{frame}
-%%%%%%%%%%%%%%%%
 \begin{frame}{Simulation}{Octagon-square formation with 100 robots}
-  \begin{block}{}
-    \begin{columns}[T] % align columns
-      \begin{column}{.5\textwidth}
-         \begin{figure}
-          \centering
-           % \includegraphics[width=.95\linewidth]{figs/octagonsquare}
-            \includegraphics[scale=0.45]{figs/initial-formation}
-            \caption{Initial uniform distribution of $100$ robots's
-             poses.}
-          \end{figure}
-          \begin{center}
-            %Lattice graph for repeated octagon-square pattern
-          \end{center}
-      \end{column}%
-      \begin{column}{.5\textwidth}   
-        \begin{figure}
-          \centering
-          \includegraphics[width=\linewidth]{figs/final-formation}
-          %\includegraphics[width=.9\linewidth]{figs/formation-100}
-          \caption{Final formation of repeated octagon-square pattern.}
-        \end{figure}
-        \begin{center}
-%          Final formation.
-        \end{center}
-      \end{column}%
-    \end{columns}
-  \end{block}
+  \begin{center}
+    \includemovie[toolbar,poster,autoplay]{7cm}{7cm}{octsq.mp4}
+  \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Simulation}{Hexagon formation with 100 robots}
-  \begin{block}{}
-    \begin{columns}[T] % align columns
-      \begin{column}{.5\textwidth}
-        \begin{figure}
-          \centering
-          %\includegraphics[scale=0.5]{figs/hex}
-          %\caption{Lattice graph for repeated hexagon pattern}
-          \includegraphics[scale=0.45]{figs/initial-formation}
-          \caption{Initial uniform distribution of $100$ robots's
-            poses.}
-        \end{figure}
-      \end{column}%
-      \begin{column}{.5\textwidth}   
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.85\linewidth]{figs/formation-100}
-            \caption{Final formation of repeated hexagon pattern.}
-        \end{figure}
-      \end{column}%
-    \end{columns}
-  \end{block}
+  \begin{center}
+    \includemovie[toolbar,poster,autoplay]{7cm}{7cm}{hexagon.mp4}
+  \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
@@ -760,13 +676,10 @@
 lattice patterns}
   \begin{block}{Experiments Setup}
     \begin{itemize}
-    \item Keep a consistent velocity in all experiments
-    \item Varied the number of robots $n=50, 100, 150, 200, 250$
+    \item Varied the number of robots $n$
     \item For each $n$, we repeated the experiment $50$ times
     \item Initially all robots are uniformly distributed with distinct
       random seeds each experiment
-    \item For robustness test, randomly remove some robots from or add
-      some robots to the system
     \end{itemize}
   \end{block}
   \begin{block}{Measurements}
