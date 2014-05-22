@@ -16,7 +16,9 @@
 %\setbeamercolor{frametitle}{fg=blue}
 % Change the normal text color background:
 %\setbeamercolor{normal text}{fg=black,bg=gray!10}
-% ... and you can of course change a lot more - see the beamer user manual.
+% ... and you can of course change a lot more - see the beamer user
+% manual.
+\usepackage{animate}
 \usepackage{epstopdf}
 \usepackage{movie15}
 \usepackage[utf8]{inputenc}
@@ -119,19 +121,27 @@
 
 \section{Introduction}
 \begin{frame}{Related Work}{}
-  \begin{block}{}
     \begin{columns}[T] % align columns
-      \begin{column}{.48\textwidth}
-        \color{red}\rule{\linewidth}{4pt}
-        Left Part
+      \begin{column}{.45\textwidth}
+        \small{Virtual Force}
+        \begin{figure}
+          \centering
+          \includegraphics[height=1in]{figs/james.png}
+        \end{figure}
+        \footnotesize{S. Prabhu, W Li, J. McLurkin, 2012}
       \end{column}%
-      \hfill%
-      \begin{column}{.48\textwidth}
-        \color{blue}\rule{\linewidth}{4pt}
-        Right Part
+      \begin{column}{.45\textwidth}
+        \small{Task Assignment}
+        \begin{center}
+        \animategraphics[height=1in,autoplay]{12}{figs/liu_}{0}{18}   
+        \end{center}
+        \footnotesize{ Lantao Liu and Dylan Shell, 2012}
       \end{column}%
     \end{columns}
-\end{block}
+    \begin{figure}
+      \centering
+      \includegraphics[height=1in]{figs/tessellation.png}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Contribution}{}
