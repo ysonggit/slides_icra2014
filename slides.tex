@@ -629,39 +629,39 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 
-\begin{frame}{Robot Motion Control}{4. Robot Movements}
-  \textcolor{scred}{\large 1. Root Robot: Does Not Move}
-  \begin{block}{2. Descendant Robot:}
-    \begin{figure}
-      \centering
-      \begin{tikzpicture}[
-        level 1/.style={sibling distance=40mm},
-        edge from parent/.style={->,draw},
-        >=latex]       
-        % root of the the initial tree, level 1
-        \node[root] {Descendant}
-        % The first level, as children of the initial tree
-        child {node[level 2] (c1) {Has matching with its parent}}
-        child {node[level 2] (c3) {Has no matching with its parent}};
-        % The second level, relatively positioned nodes
-        \begin{scope}[every node/.style={level 3}]
-          \node [below of = c1, xshift=10pt, yshift=-10pt] (c11) {Move
-            towards its destination}; \node [below of = c11,
-          yshift=-20pt] (c12) {Keep itself in the range of its
-            parent}; \node [below of = c3, xshift=10pt, yshift=-10pt]
-          (c31) {Move away from its parent}; \node [below of = c31,
-          yshift=-20pt] (c32) { Discard any messages during
-            movements};
-        \end{scope}
-        % lines from each level 1 node to every one of its "children"
-        \foreach \value in {1,2}
-        \draw[->] (c1.195) |- (c1\value.west);
-        \foreach \value in {1,2}
-        \draw[->] (c3.195) |- (c3\value.west);
-      \end{tikzpicture}
-    \end{figure}
-  \end{block}
-   
+\begin{frame}{Robot Moving Strategy}{4. Robot Motion}
+  % Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=red!10, 
+    text width=5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!10, 
+    text width=5em, text centered, rounded corners]%, minimum height=2em]
+\tikzstyle{line} = [draw, -latex']
+
+\begin{figure}    
+\centering
+\begin{tikzpicture}
+    % Place nodes
+    \node [block] (init) {\footnotesize{Start}};
+    \node [decision, below of=init, node distance=2cm] (decide) {\footnotesize{Is root robot?}};
+    \node [block, below of=decide, node distance=2cm] (root) {\footnotesize{Root}};
+    \node [block, below of=root, node distance=2cm] (stop) {\footnotesize{Stay}};
+    \node [block, right of=decide, node distance=3cm] (descendant) {\footnotesize{Descendant}};
+    \node [decision, below of=descendant, node distance=2cm] (decideagain) {\footnotesize{Has
+        matching?}};
+    \node [block, right of=decideagain, node distance=3cm, text width=7em] (away)
+    {\footnotesize{Move Away from its parent}};
+    \node [block, below of=decideagain, node distance=2cm, text width=7em] (go)
+    {\footnotesize{Move towards destination}};
+    % Draw edges
+    \path [line] (init) -- (decide);
+    \path [line] (decide) -- node {yes}(root);
+    \path [line] (root) -- (stop);
+    \path [line] (decide) -- node {no} (descendant);
+    \path [line] (descendant) -- (decideagain);
+    \path [line] (decideagain) -- node {no} (away);
+    \path [line] (decideagain) -- node {yes} (go);
+  \end{tikzpicture}
+  \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%
 \begin{frame}{Robot Motion Control}{4. Constraints: Bounded Movement Model}
