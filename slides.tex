@@ -1,3 +1,4 @@
+
 % use pdflatex -shell-escape slides.tex to compile
 \documentclass[10pt]{beamer}
 \usetheme[
@@ -219,30 +220,39 @@
 \end{frame}
 
 \begin{frame}{Lattice Graph}
-  \hrule
-  \begin{bclogo}[noborder=true, logo=\bccrayon]{} 
-    Given a lattice graph $G=(V, E)$ and a set of robots $R = \{
-    r_1, \ldots, r_n \}$, we say that $R$ \textbf{satisfies} $G$ if
+  %\hrule
+  %\begin{bclogo}[noborder=true, logo=\bccrayon]{} 
+  \begin{block}{}
+    \small{Given a lattice graph $G=(V, E)$ and a set of robots $R = \{
+    r_1, \ldots, r_n \}$, $R$ \textbf{satisfies} $G$ if
     there exists a role function $f: R \rightarrow V$ that preserves
     the neighborhood structure of $G$.
-    % 
+    \\
     Specifically, for any $i$ and $j$, if $r_i$ and $r_j$ are neighbors, 
     there must exist an edge
     $e_{ij}: \edge{f(r_i)}{}{f(r_j)}$ in $E$, such that
-    $$ T(r_j) = T(r_i) T(e_{ij})$$
-  \end{bclogo}
-  \hrule 
+    $ T(r_j) = T(r_i) T(e_{ij})$}
+  %\end{bclogo}
+  %\hrule 
   \begin{columns}[T] 
-    \begin{column}{.5\textwidth}
-
+    \begin{column}{.4\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[scale=0.38]{figs/hex}
+      \end{figure}
     \end{column}%
     \begin{column}{.5\textwidth}
       \begin{figure}
         \centering
-        
+        \includegraphics[width=\linewidth]{figs/bad-hexagon}
       \end{figure}
+      \begin{figure}
+        \centering
+        \includegraphics[scale=1]{figs/good-hexagon}
+        \end{figure}
     \end{column}%
   \end{columns}
+\end{block}
 \end{frame}
 
 
@@ -399,7 +409,7 @@
       selects the highest authority.
     \end{enumerate} 
   \begin{columns}[T] % align columns
-    \begin{column}{.55\textwidth}
+    \begin{column}{.45\textwidth}
       \begin{itemize}
       \item If its authority is the highest, then it is
         the \textcolor{red}{root};
@@ -490,8 +500,7 @@
            \draw[post] (0.5,4.125) -- (q.west);
            
            \path (3,4) -- (3.875, 2.25) node[pos=\rP] (q){};
-           \draw[post] (3,4) -- (q.west);
-           
+           \draw[post] (3,4) -- (q.west);        
         }
       \end{animateinline}
     \end{column}
@@ -632,7 +641,7 @@
 \begin{frame}{Robot Moving Strategy}{4. Robot Motion}
   % Define block styles
 \tikzstyle{decision} = [diamond, draw, fill=red!10, 
-    text width=5em, text badly centered, node distance=3cm, inner sep=0pt]
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
 \tikzstyle{block} = [rectangle, draw, fill=blue!10, 
     text width=5em, text centered, rounded corners]%, minimum height=2em]
 \tikzstyle{line} = [draw, -latex']
@@ -648,7 +657,7 @@
     \node [block, right of=decide, node distance=3cm] (descendant) {\footnotesize{Descendant}};
     \node [decision, below of=descendant, node distance=2cm] (decideagain) {\footnotesize{Has
         matching?}};
-    \node [block, right of=decideagain, node distance=3cm, text width=7em] (away)
+    \node [block, right of=decideagain, node distance=3.5cm, text width=7em] (away)
     {\footnotesize{Move Away from its parent}};
     \node [block, below of=decideagain, node distance=2cm, text width=7em] (go)
     {\footnotesize{Move towards destination}};
@@ -664,10 +673,19 @@
   \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%
-\begin{frame}{Robot Motion Control}{4. Constraints: Bounded Movement Model}
-  \begin{block}{Bounded Movement Example}
-    At time $t$, robot $r_i$ selects robot $r_p$ as its parent.
+\begin{frame}{Bounded Movement}{}
     \begin{columns}[T] % align columns
+      \begin{column}{.5\textwidth}
+        \begin{itemize}
+        \item Set $O$ (\textcolor{red}{Red circle}) denotes the parent's
+          observation at next stage.
+        \item Descendant can be anywhere in set $P$ (\textcolor{blue}{blue
+            circle}) at next stage.
+        \item The real destination for descendant is the closest
+          position on the boundary of the intersection ($O\cap P$) to
+          the assigned destination.
+        \end{itemize}
+      \end{column}%
       \begin{column}{.5\textwidth}
       % Definition of circles
         \def\firstcircle{(0,0) circle (2cm)}
@@ -683,31 +701,25 @@
           \begin{scope}
             \clip \firstcircle;
             \fill[filled] \secondcircle;
-          \end{scope}
-       
-          \draw[outline] \firstcircle node {$ $}; 
+          \end{scope}       
+          \draw[outline, red] \firstcircle node {$ $}; 
           \draw[fill=circle area, red] (0,0) circle (0.1cm); 
-          \node at (-0.75,-0.3) {$p_p$};
+          \node at (-0.75,-0.3) {Parent};
           
           \draw[outline]
           \secondcircle node {$ $};
 
           \draw[fill=circle area, blue] (2.3,1.8) circle (0.1cm); 
-          \node at (3.2, 2) {$p_i^{(p)}$};
+          \node at (3.2, 2.3) {Descendant};
 
           \draw[fill=circle area, blue] (3, -0.7) circle (0.1cm); 
-          \node at (3.8,-1) {$\bar{p}_i^{(p)}$};
+          \node at (3.8,-1) {Assigned Destination};
 
           \draw[fill=circle area, blue] (1.96, 0.32) circle (0.1cm); 
-          \node  at (3.5,0) {$p_i$};
+          \node  at (3.5,0) {Real Destination};
         \end{tikzpicture}
       \end{column}%
-      \begin{column}{.45\textwidth}
-      
-      \end{column}%
     \end{columns}
-   
-  \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
 
@@ -727,22 +739,33 @@
 %%%%%%%%%%%%%%%%
 
 \begin{frame}{Experiments}{on three kinds of repeated
-lattice patterns}
+    lattice patterns}
   \begin{block}{Experiments Setup}
     \begin{itemize}
-    \item Varied the number of robots $n$
-    \item For each $n$, we repeated the experiment $50$ times
-    \item Initially all robots are uniformly distributed with distinct
-      random seeds each experiment
+    \item Varied the number of robots $n$.
+    \item For each $n$, repeated the experiment $50$ times.
+    \item Initially all robots are uniformly distributed in each experiment.
     \end{itemize}
   \end{block}
-  \begin{block}{Measurements}
-    \begin{itemize}
-    \item Average execution time
-    \item Average non-fulfillment ratio: $\Gamma =
-      \dfrac{1}{n}\sum\limits_{i=1}^n \frac{E_i - N_i}{E_i}$
-    \end{itemize}
-  \end{block}
+  
+    \begin{columns}
+      \begin{column}{.6\textwidth}
+        \begin{block}{Measurements}
+          \begin{itemize}
+          \item Average time to real static position
+          \item Average non-fulfillment ratio: $\Gamma =
+            \dfrac{1}{n}\sum\limits_{i=1}^n \frac{E_i - N_i}{E_i}$
+          \end{itemize}
+        \begin{figure}
+          \centering
+          %\includegraphics[width=\linewidth]{figs/bad-hexagon}
+        \end{figure}
+      \end{block}
+      \end{column}
+      \begin{column}{.3\textwidth}
+        
+      \end{column}
+    \end{columns} 
 \end{frame}
 
 %%%%%%%%%%%%%%%%
@@ -751,46 +774,49 @@ lattice patterns}
 %  \setbeamercolor{structure}{fg=red}
 %  \setbeamercolor{frametitle}{use=structure,fg=structure.fg}
 %  \setbeamercolor{normal text}{bg=gray!20}
-\begin{frame}{Results}{}
-   \begin{columns}[T] % align columns
-      \begin{column}{.48\textwidth}
-        \begin{figure}
-          \centering
-          \includegraphics[width=\textwidth]{figs/exptime}
-          \caption{Average execution time and its standard deviation
-            of forming repeated lattice patterns of square, hexagon
+\begin{frame}{Results}{on three kinds of repeated
+lattice patterns}
+\textcolor{scred}{Average time and its standard deviation
+            of forming repeated \\ 
+            lattice patterns of square, hexagon
             and octagon-square}
-        \end{figure}
-      \end{column}%
-      \begin{column}{.48\textwidth}
-        \begin{figure}
-          \centering
-          \includegraphics[width=\textwidth]{figs/expqual}
-          \caption{Average non-fulfillment ratio and its standard
-            deviation of forming lattice patterns of square, hexagon
-            and octagon-square.}
-        \end{figure}
-      \end{column}%
-    \end{columns}
+          \begin{figure}
+            \centering
+            \includegraphics[width=0.75\textwidth]{figs/exptime}
+          \end{figure}
+
 \end{frame}
 %%%%%%%%%%%%%%%%
+\begin{frame}{Results}{on three kinds of repeated
+lattice patterns}
+\textcolor{scred}{Average non-fulfillment ratio and its standard
+            deviation of forming\\ repeated
+            lattice patterns of square, hexagon
+            and octagon-square}
+          \begin{figure}
+            \centering
+            \includegraphics[width=0.75\textwidth]{figs/expqual}
+          \end{figure}
+\end{frame}
 
 \subsection{Conclusions}
 % Widescreen Support
 \begin{frame}{Conclusions}{}
-\begin{block}{Pros of the Algorithm}
+\begin{block}{Summary}
   \begin{itemize}
-  \item robots can form different types of geometric formations,
-including the repeated lattice patterns
-  \item scales reasonably well with increasing numbers of robot
-  \item robust to the situation when some robots are removed from or
-with more robots added to the system
+  \item Robots can form different types of geometric formations,
+    including the repeated lattice patterns
+  \item Algorithm scales reasonably well with increasing numbers of
+    robot
+  \item Algorithm is robust to the situation when some robots are removed from or
+    with more robots added to the system
   \end{itemize}
 \end{block}
-\begin{block}{Cons of the Algorithm}
+\begin{block}{Future Work}
   \begin{itemize}
-  \item no collision avoidance for motion strategy
-  \item limited on the multi-robot systems subject to the nonholonomic
+  \item Promote the motion strategy
+  \item Theoretically prove the convergence of the algorithm 
+  \item Extend the algorithm to the multi-robot systems subject to the nonholonomic
     constraints
   \end{itemize}
 \end{block}
@@ -798,58 +824,13 @@ with more robots added to the system
 %%%%%%%%%%%%%%%%
 
 
-\subsection{Questions}
+%\subsection{Questions}
 % contact information
-\begin{frame}{Questions}{}
-  \begin{center}
-    \textcolor{scred}{\LARGE $\mathscr{THANK}$ $\mathscr{YOU}!$}
-  \end{center}
-\end{frame}
-%%%%%%%%%%%%%%%%
-% \begin{frame}{Authority Tree}{}
-%   \begin{block}{The key idea to make our local strategy reach a global static
-%     state is the authority carried by each robot}
-%     \begin{columns}[T] % align columns
-%       \begin{column}{.65\textwidth}
-%         \begin{itemize}
-%         \item Each robot chooses one of its neighbors to be its
-%           parent.
-%         \item Robots that choose not to select a parent are
-%           called \textbf{root} robot.
-%         \item Robots that select a parent are called
-%           \textbf{descendants} of that parent. 
-%         \end{itemize} 
-%         \hrule
-%         \begin{bclogo}[noborder=true, logo=\bccrayon]{Example} 
-%           Robot $4$ is the \textcolor{red}{Root} robot\\
-%           Robot $1$ is a descendant of Robot $4$\\
-%           Robot $2$ is a descendant of Robot $1$
-%         \end{bclogo}
-%         \hrule
-%       \end{column}%
-%       \begin{column}{.35\textwidth}
-%         \begin{figure}[center]
-%           \centering
-%           \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
-%             thick,main node/.style={circle,fill=red!20,draw,font=\sffamily}]
-
-%             \node[main node] (1) {1}; 
-%             \node[main node] (2) [below left of=1]
-%             {2}; 
-%             \node[main node] (4) [above left of=1] {4}; 
-%             \tikzset{node distance=1cm} 
-%             \node (11) [below of=1] {$\{4,1\}$}; 
-%             \node (22) [below of=2] {$\{4,1,2\}$}; 
-%             \node (44) [right of=4] {$\{4\}$}; 
-%             \path[every node/.style={font=\sffamily\small}] 
-%             (1) edge node[left] {} (2)            
-%             (4) edge node[right] {} (1);
-%           \end{tikzpicture}
-%         \end{figure} 
-%       \end{column}%
-%     \end{columns}
-%    \end{block} 
+% \begin{frame}{Questions}{}
+%   \begin{center}
+%     \textcolor{scred}{\LARGE $\mathscr{THANK}$ $\mathscr{YOU}!$}
+%   \end{center}
 % \end{frame}
-
+%%%%%%%%%%%%%%%%
 
 \end{document}
