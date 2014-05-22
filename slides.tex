@@ -409,77 +409,89 @@
       \end{itemize}     
     \end{column}%
     \begin{column}{.45\textwidth}
-      \begin{animateinline}[
+       \begin{animateinline}[
         begin={%
           \begin{tikzpicture}%
-            [demand2/.style={circle, fill=red!20!white, font=\tiny,
-              text centered},%
-            demand4/.style={circle, fill=green!20!white, font=\tiny,
-              text centered},
-            demand3/.style={circle, fill=blue!20!white, font=\tiny, text centered},
-            post/.style={->,>=stealth', thin, draw=black!50},
+           [post/.style={->,>=stealth', thick, draw=blue!50},
             node/.style={circle,fill=red!20,draw,font=\sffamily\small}]%
-            \useasboundingbox (-0.5,-0.5) rectangle (3.5,3);
+            \useasboundingbox (0,1) rectangle (5,5);
           },
           end={\end{tikzpicture}}
         ]{10}
-        \draw[red] (3,0) circle (2);  % color for 2: red
-        \draw[green] (1,0) circle (2);   % color for 4: green
-        \draw[blue] (3,2) circle (2);    % color for 3: blue
-        \node (b) at (1,0) [demand4]  {4}; 
-        \node (d) at (3,0) [demand2]  {2};
-        \node (c) at (3,2) [demand3]  {3};
-        \node (4) [above of=b] {(4)};
-        \node (2) [above left of=d] {(2)};
-        \node (3) [left of=c] {(3)};
+        \draw[dashed, blue] (3, 4) circle (3);
+        % center is (3,4)
+        \draw[fill=blue!50] (3,4) -- (2.75,4) -- (3.25,4.25) -- (3,3.75)  -- cycle;
+        \node[color=blue] at (2.75, 3.5) {$(2)$};
+        % center is (0.5, 4.5)
+        \draw[dashed, green] (0.5,4.5) circle (2.8);
+        \draw[fill=green!50] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
+        (0.67,4) -- cycle;
+        \node[color=green] at (0.5, 3.75) {$(4)$};
+        % center is (3.75,2)
+        \draw[dashed, red] (3.75,2) circle (2.5);
+         \draw[fill=red!50] (3.5,2.5) -- (3.75,2) -- (3.75,2.25) --
+         (4,2.25) -- cycle;
+         \node[color=red] at (3.3, 2) {$(3)$};
+         %%%%
         \newframe*
-        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ 
-          \draw[red] (3,0) circle (2);
-          \draw[green] (1,0) circle (2);
-          \draw[blue] (3,2) circle (2);
-          \node (b) at (1,0) [demand4]  {4}; 
-          \node (d) at (3,0) [demand2]  {2};
-          \node (c) at (3,2) [demand3]  {3};
-          % \path (b.east) -- (d.west) node[pos=\rP] (q){};
-          % \draw[post] (b.east) -- (q.west);
-          \node (4) [above of=b] {(4)};
-          \node (2) [above left of=d] {(4,2)};
-          \node (3) [left of=c] {(3)};
-          % \path (d.north) -- (c.south) node[pos=\rP] (p){};
-          % \draw[post] (d.north) -- (p.south);
+        \multiframe{10}{r = 1 + 1}{ 
+          \draw[dashed, blue] (3, 4) circle (3);
+          % center is (3,4)
+          \draw[fill=blue!50] (3,4) -- (2.75,4) -- (3.25,4.25) --
+          (3,3.75)  -- cycle;
+          \node[color=blue] at (2.75, 3.5) {$(4,2)$};
+          % center is (0.5, 4.5)
+          \draw[dashed, green] (0.5,4.5) circle (2.8);
+          \draw[fill=green!50] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
+          (0.67,4) -- cycle;
+          \node[color=green] at (0.5, 3.75) {$(4)$};
+          % center is (3.75,2)
+          \draw[dashed, red] (3.75,2) circle (2.5);
+          \draw[fill=red!50] (3.5,2.5) -- (3.75,2) -- (3.75,2.25) --
+          (4,2.25) -- cycle;
+          \node[color=red] at (3.3, 2) {$(3)$};
         }
         \newframe*
-        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ 
-          \draw[red] (3,0) circle (2);
-          \draw[green] (1,0) circle (2);
-          \draw[blue] (3,2) circle (2);
-          \node (b) at (1,0) [demand4]  {4}; 
-          \node (d) at (3,0) [demand2]  {2};
-          \node (c) at (3,2) [demand3]  {3};
-          % \path (b.east) -- (d.west) node[pos=\rP] (q){};
-          % \draw[post] (b.east) -- (q.west);
-          \node (4) [above of=b] {(4)};
-          \node (2) [above left of=d] {(4,2)};
-          \node (3) [left of=c] {(4,2,3)};
-          % \path (d.north) -- (c.south) node[pos=\rP] (p){};
-          % \draw[post] (d.north) -- (p.south);
+        \multiframe{10}{r = 1 + 1}{ 
+          \draw[dashed, blue] (3, 4) circle (3);
+          % center is (3,4)
+          \draw[fill=blue!50] (3,4) -- (2.75,4) -- (3.25,4.25) --
+          (3,3.75)  -- cycle;
+          \node[color=blue] at (2.75, 3.5) {$(4,2)$};
+          % center is (0.5, 4.5)
+          \draw[dashed, green] (0.5,4.5) circle (2.8);
+          \draw[fill=green!50] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
+          (0.67,4) -- cycle;
+          \node[color=green] at (0.5, 3.75) {$(4)$};
+          % center is (3.75,2)
+          \draw[dashed, red] (3.75,2) circle (2.5);
+          \draw[fill=red!50] (3.5,2.5) -- (3.75,2) -- (3.75,2.25) --
+          (4,2.25) -- cycle;
+          \node[color=red] at (3, 2) {$(4,2,3)$};
         }
-        \newframe*
-        \multiframe{10}{rP = 0.1 + .1, r = 1 + 1}{ %-->(PSD)
-          \draw[red] (3,0) circle (2);
-          \draw[green] (1,0) circle (2);
-          \draw[blue] (3,2) circle (2);
-          \node (b) at (1,0) [demand4]  {4}; 
-          \node (d) at (3,0) [demand2]  {2};
-          \node (c) at (3,2) [demand3]  {3};
-          \path (b.east) -- (d.west) node[pos=\rP] (q){};
-          \draw[post] (b.east) -- (q.west);
-          %\path (b.east) edge (d.west);%%% edge without arrow
-          \path (d.north) -- (c.south) node[pos=\rP] (p){};
-          \draw[post] (d.north) -- (p.south);
-          \node (4) [above of=b] {(4)};
-          \node (2) [above left of=d] {(4,2)};
-          \node (3) [left of=c] {(4,2,3)};
+         \newframe*
+         \multiframe{10}{rP = 0.1 +.1, r = 1 + 1}{ 
+           \draw[dashed, blue] (3, 4) circle (3);
+          % center is (3,4)
+          \draw[fill=blue!50] (3,4) -- (2.75,4) -- (3.25,4.25) --
+          (3,3.75)  -- cycle;
+          \node[color=blue] at (2.75, 3.5) {$(4,2)$};
+          % center is (0.5, 4.5)
+          \draw[dashed, green] (0.5,4.5) circle (2.8);
+          \draw[fill=green!50] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
+          (0.67,4) -- cycle;
+          \node[color=green] at (0.5, 3.75) {$(4)$};
+          % center is (3.75,2.25)
+          \draw[dashed, red] (3.75,2.25) circle (2.5);
+          \draw[fill=red!50] (3.5,2.5) -- (3.75,2) -- (3.75,2.25) --
+          (4,2.25) -- cycle;
+          \node[color=red] at (3, 2) {$(4,2,3)$};
+           \path (0.5,4.5) -- (3,4) node[pos=\rP] (q){};
+           \draw[post] (0.5,4.125) -- (q.west);
+           
+           \path (3,4) -- (3.875, 2.25) node[pos=\rP] (q){};
+           \draw[post] (3,4) -- (q.west);
+           
         }
       \end{animateinline}
     \end{column}
