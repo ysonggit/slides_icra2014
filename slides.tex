@@ -138,22 +138,37 @@
         \footnotesize{ Lantao Liu and Dylan Shell, 2012}
       \end{column}%
     \end{columns}
-    \begin{figure}
-      \centering
-      \includegraphics[height=1in]{figs/tessellation.png}
-    \end{figure}
+
 \end{frame}
+
+
+\begin{frame}{Motivation}{}
+  % \begin{columns}
+  %   \begin{column}{.5\textwidth}
+      
+  %   \end{column}
+  %   \begin{column}{.5\textwidth}
+      
+  %   \end{column}
+  % \end{columns} 
+  \begin{figure}
+    \centering
+    \includegraphics[height=1in]{figs/tessellation.png}
+  \end{figure}
+\end{frame}
+
 
 \begin{frame}{Objective}{}
 \begin{block}{}
-  \small{Given a set of robots, algorithm takes various of
-    representations of formation patterns and generates robot motion
-    to form various formation patterns using only local information.}
   \begin{columns}[T] % align columns
-    \begin{column}{.5\textwidth}
+    \begin{column}{.45\textwidth}
+     \textcolor{scred}{INPUT:} \small{A representation of a (repeating)
+     lattice pattern.}
       \includemovie[toolbar,poster,autoplay]{4.5cm}{4.5cm}{square10.mp4}
     \end{column}%
-    \begin{column}{.5\textwidth}
+    \begin{column}{.45\textwidth}
+      \textcolor{scred}{OUTPUT:} \small{Move to this pattern using
+        only local information.}
       \includemovie[toolbar,poster,autoplay]{4.5cm}{4.5cm}{hexagon10.mp4}
     \end{column}%
   \end{columns} 
@@ -161,12 +176,12 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%
-\begin{frame}{Robot Specifications}{}
+\begin{frame}{Robot Model}{}
 %\begin{block}{}
   \begin{columns}[T] % align columns
       \begin{column}{.55\textwidth}
         \begin{itemize}
-        \item Holonomic or Differential Drive robots.
+        \item Differential Drive robots.
         \item Each robot has an unique \textbf{ID}.
         \item Use a vector $p = [x, y,
           \theta]^T$ to represent robot's \textbf{pose}.
@@ -192,8 +207,7 @@
           \end{tikzpicture}
         \end{figure}
         \begin{center}
-          The disk describes Robot $r_i$'s range, it has
-          four neighbors
+          Robot $r_i$ has 4 neighbors
         \end{center}
       \end{column}%
     \end{columns}
@@ -202,7 +216,7 @@
 
 \section{Lattice Graph}
 % definition of lattice graph
-\begin{frame}{Lattice Graph}
+\begin{frame}{Input: Lattice Graph}
     \begin{bclogo}[logo=\bccrayon, couleur=orange!10, arrondi=0.2, ombre=true]{Definition}
       A \textbf{lattice graph} is a strongly connected directed
       multigraph in which each edge $e$ is labeled with a rigid body
@@ -210,20 +224,20 @@
       inverse edge $\edge{w}{T(e)^{-1}}{v}$.  
     \end{bclogo}
     \begin{columns}[T] % align columns
-      \begin{column}{.5\textwidth}
+      \begin{column}{.45\textwidth}
         \begin{figure}
           \centering
-          \begin{tikzpicture}[->,>=stealth',shorten >=5pt,auto,node distance=1cm,semithick]
-            \tikzstyle{every state}=[fill=scred,draw=none, text=white]
+          \begin{tikzpicture}[->,>=stealth',shorten >=5pt,auto,node distance=1cm]
+            \tikzstyle{every state}=[fill=purple,draw=none, text=white]
             \node[state, scale=0.6] (A)         {$0$};
-            \path (A) edge [loop above] node {Tr(0, 40)} (A)
-                      edge [loop left]  node {Tr(-40,0)} (A)
-                      edge [loop below] node {Tr(0, -40)} (A)
-                      edge [loop right] node {Tr(40, 0)} (A);
+            \path (A) edge [loop above] node {\footnotesize{Tr(0, 40)}} (A)
+                      edge [loop left]  node {\footnotesize{Tr(-40,0)}} (A)
+                      edge [loop below] node {\footnotesize{Tr(0, -40)}} (A)
+                      edge [loop right] node {\footnotesize{Tr(40, 0)}} (A);
           \end{tikzpicture}
         \end{figure}
       \end{column}%
-      \begin{column}{.5\textwidth}
+      \begin{column}{.45\textwidth}
         \begin{figure}
           \centering
           \includegraphics[scale=1]{figs/squarelattice}
@@ -232,10 +246,9 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Lattice Graph}
-  %\hrule
-  %\begin{bclogo}[noborder=true, logo=\bccrayon]{} 
+\begin{frame}{Role Function}
   \begin{block}{}
+  \begin{bclogo}[logo=\bccrayon, couleur=orange!10, arrondi=0.1, ombre=true]{Definition}
     \small{Given a lattice graph $G=(V, E)$ and a set of robots $R = \{
     r_1, \ldots, r_n \}$, $R$ \textbf{satisfies} $G$ if
     there exists a role function $f: R \rightarrow V$ that preserves
@@ -244,14 +257,28 @@
     Specifically, for any $i$ and $j$, if $r_i$ and $r_j$ are neighbors, 
     there must exist an edge
     $e_{ij}: \edge{f(r_i)}{}{f(r_j)}$ in $E$, such that
-    $ T(r_j) = T(r_i) T(e_{ij})$}
-  %\end{bclogo}
+    $ T(r_j) = T(r_i) T(e_{ij})$.}
+  \end{bclogo}
   %\hrule 
   \begin{columns}[T] 
     \begin{column}{.4\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[scale=0.38]{figs/hex}
+        % \includegraphics[scale=0.38]{figs/hex}
+        \begin{tikzpicture}[->,>=stealth',shorten >=5pt,auto,node
+          distance=1cm]
+            \tikzstyle{every state}=[fill=purple, draw=none, text=white]
+            \node[state, scale=0.6] (A) at (0,0)    {$0$};
+            \node[state, scale=0.6, fill=cyan] (B) at (3,0)  {$1$};
+            \path (A) edge [bend left=10] node {\scriptsize{Tr(0, 40)}} (B)
+                  (A) edge [bend left=45] node {\scriptsize{Tr(-35,-20)}} (B)
+                  (A) edge [bend left=90] node
+                  {\scriptsize{Tr(35,-20)}} (B)
+                  (B) edge [bend left=10]  node {\scriptsize{Tr(-40,0)}} (A)
+                  (B) edge [bend left=45]  node
+                  {\scriptsize{Tr(35,20)}} (A)
+                  (B) edge [bend left=90]  node {\scriptsize{Tr(-35,20)}} (A);
+        \end{tikzpicture}
       \end{figure}
     \end{column}%
     \begin{column}{.5\textwidth}
@@ -265,38 +292,32 @@
         \end{figure}
     \end{column}%
   \end{columns}
-\end{block}
+  \end{block}
 \end{frame}
 
 
 \subsection{Algorithm}
 \begin{frame}{Algorithm}
-  \begin{block}{Robot broadcast message containing
-      \textcolor{red}{authority} and \textcolor{red}{matching}}.
+  \begin{block}{General Description}
   \begin{columns}[T] % align columns
-   \begin{column}{.5\textwidth}
+   \begin{column}{.45\textwidth}
+     Robot broadcasts message containing its
+     \begin{itemize}
+     \item \textcolor{red}{authority} 
+     \item \textcolor{red}{matching}.
+     \end{itemize}
+
       \begin{enumerate}
-      \item Decides whether to be a \textcolor{red}{root}
-        robot or a \textcolor{blue}{descendant} robot based on ``authority''
-      \item Chooses a \textcolor{purple}{role} in the
-        lattice graph. 
-        % \begin{itemize}
-        % \item \textcolor{red}{Root} robots always select the
-        %   first lattice vertex as their role.  
-        % \item \textcolor{blue}{Descendant} robots accept
-        %   their roles as from their parents.
-        % \end{itemize}    
-      \item Computes a local task assignment for
-        its neighbors and broadcasts this assignment to its neighbors.  
-      \item Move to the destination. %Each \textcolor{blue}{descendant} robot moves toward to
-        %the destination computed according to the assignment of its parent.
+      \item Form tree structure.
+      \item Use tree structure to computer local task assignment.
+      \item Make movement decision.
       \end{enumerate}
     \end{column}%
-    \begin{column}{.5\textwidth}
+    \begin{column}{.45\textwidth}
       \begin{animateinline}[
         begin={%
           \begin{tikzpicture}%
-           [post/.style={->,>=stealth', thin, draw=blue!50},
+           [post/.style={->,>=stealth', semithick, draw=blue!50},
             node/.style={circle,fill=red!20,draw,font=\sffamily\small}]%
             \useasboundingbox (0,0) rectangle (5,5);
           },
@@ -334,7 +355,7 @@
            \draw[post] (0.33, 4) -- (q.north);
         }
         \newframe*
-        \multiframe{10}{r = 1 + 1}{ 
+        \multiframe{10}{rP = 0.1 +.1, r = 1 + 1}{ 
          \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
          \node[color=red] at (3, 2.3) {$root$};           
          \draw[fill=blue] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
@@ -342,42 +363,38 @@
          \node[color=blue] at (1, 3.75) {$descendant$};           
          \draw[fill=blue] (1,1.5) -- (1.25,1) -- (1.25,1.25) -- (1.5,1.25)  -- cycle;
          \node[color=blue] at (2.5,1.5) {$descendant$};
-         \node[color=black] at (3, 4.5) {Build Authority Tree};           
+         \node[color=black] at (3, 4.5) {Form Tree Structure};
+         \path (3,3) -- (1.25, 1.25) node[pos=\rP] (q){};
+         \draw[post, color=red] (3,3) -- (q.west);
+           
+         \path (3,3) -- (0.5, 4.125) node[pos=\rP] (q){};
+         \draw[post, color=red] (3,3) -- (q.west);
         }
         \newframe*
         \multiframe{10}{r = 1 + 1}{ 
           \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
-         \node[color=red] at (3, 2.3) {$role:0$};           
-         \draw[fill=blue] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
+          \draw[fill=blue] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
          (0.67,4) 	-- cycle;
-         \node[color=blue] at (1, 3.75) {$role:1$};           
          \draw[fill=blue] (1,1.5) -- (1.25,1) -- (1.25,1.25) -- (1.5,1.25)  -- cycle;
-         \node[color=blue] at (2,1.5) {$role:2$};
-         \node[color=black] at (3, 4.5) {Choose Role};           
-        }
-        \newframe*
-        \multiframe{10}{r = 1 + 1}{ 
-          \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
-        % \node[color=red] at (3, 2.3) {$role:0$};           
-         \draw[fill=blue] (0.5,4.5) -- (0.33,4) -- (0.5,4.125) --
-         (0.67,4) 	-- cycle;
-         %\node[color=blue] at (1, 3.75) {$role:1$};           
-         \draw[fill=blue] (1,1.5) -- (1.25,1) -- (1.25,1.25) -- (1.5,1.25)  -- cycle;
-         %\node[color=blue] at (3,1.5) {$role:2$};
          \node[color=black] at (3, 4.5) {Assign Task};  
-
-         \draw[fill=red!40, dotted] (1,3) -- (0.75,3) -- (1.25,3.25) -- (1,2.75) -- cycle;
-         \draw[fill=red!40, dotted] (3,1) -- (2.75,1) -- (3.25,1.25) -- (3,0.75) -- cycle;
+         %\path (3,3) -- (1.25, 1.25) node[pos=\rP] (q){};
+         \draw[post, color=red] (3,3) -- (1.25, 1.25);
+         % \path (3,3) -- (0.5, 4.125) node[pos=\rP] (q){};
+         \draw[post, color=red] (3,3) -- (0.5,4.125);
+         \draw[red, dotted] (1,3) -- (0.75,3) -- (1.25,3.25) -- (1,2.75) -- cycle;
+         \draw[red, dotted] (3,1) -- (2.75,1) -- (3.25,1.25) -- (3,0.75) -- cycle;
          \draw[dashed](1.25,1.25) -- (3,1);
          \draw[dashed](0.5,4.125) -- (1,3);
         }
         \newframe*
         \multiframe{10}{r = 1 + 1}{ 
           \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
-          \node[color=black] at (3, 4.5) {Move to Destination};  
+          \node[color=black] at (3, 4.5) {Output Motion};  
+          \draw[post, color=red] (3,3) -- (1,3);
+          \draw[post, color=red] (3,3) -- (3,1);
           \draw[fill=blue] (1,3) -- (0.75,3) -- (1.25,3.25) -- (1,2.75) -- cycle;
           \draw[fill=blue] (3,1) -- (2.75,1) -- (3.25,1.25) -- (3,0.75) -- cycle;
-       }
+        }
       \end{animateinline}
     \end{column}%
   \end{columns}
@@ -740,46 +757,16 @@
 \section{Results}
 \begin{frame}{Simulation}{Octagon-square formation with 100 robots}
   \begin{center}
-    \includemovie[toolbar,poster,autoplay]{7cm}{7cm}{octsq1000009v12sr55.mp4}
+    \includemovie[toolbar,poster,autoplay]{7cm}{7cm}{octagonsq1000009v12sr55.mp4}
   \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Simulation}{Hexagon formation with 100 robots}
   \begin{center}
-    \includemovie[toolbar,poster,autoplay]{7cm}{7cm}{hexagon1000009v12.mp4}
+    \includemovie[toolbar,poster,autoplay]{7cm}{7cm}{hexagon1000009v12sr50.mp4}
   \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%
-
-\begin{frame}{Experiments}{on three kinds of repeated
-    lattice patterns}
-  \begin{block}{Experiments Setup}
-    \begin{itemize}
-    \item Varied the number of robots $n$.
-    \item For each $n$, repeated the experiment $50$ times.
-    \item Initially all robots are uniformly distributed in each experiment.
-    \end{itemize}
-  \end{block}
-  
-    \begin{columns}
-      \begin{column}{.6\textwidth}
-        \begin{block}{Measurements}
-          \begin{itemize}
-          \item Average time to real static position
-          \item Average non-fulfillment ratio: $\Gamma =
-            \dfrac{1}{n}\sum\limits_{i=1}^n \frac{E_i - N_i}{E_i}$
-          \end{itemize}
-        \begin{figure}
-          \centering
-          %\includegraphics[width=\linewidth]{figs/bad-hexagon}
-        \end{figure}
-      \end{block}
-      \end{column}
-      \begin{column}{.3\textwidth}
-        
-      \end{column}
-    \end{columns} 
-\end{frame}
 
 %%%%%%%%%%%%%%%%
 % how to modify the theme
@@ -789,27 +776,21 @@
 %  \setbeamercolor{normal text}{bg=gray!20}
 \begin{frame}{Results}{on three kinds of repeated
 lattice patterns}
-\textcolor{scred}{Average time and its standard deviation
-            of forming repeated \\ 
-            lattice patterns of square, hexagon
-            and octagon-square}
-          \begin{figure}
-            \centering
-            \includegraphics[width=0.75\textwidth]{figs/exptime}
-          \end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figs/exptime}
+\end{figure}
 
 \end{frame}
 %%%%%%%%%%%%%%%%
 \begin{frame}{Results}{on three kinds of repeated
 lattice patterns}
-\textcolor{scred}{Average non-fulfillment ratio and its standard
-            deviation of forming\\ repeated
-            lattice patterns of square, hexagon
-            and octagon-square}
-          \begin{figure}
-            \centering
-            \includegraphics[width=0.75\textwidth]{figs/expqual}
-          \end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figs/expqual}
+\end{figure}
 \end{frame}
 
 \subsection{Conclusions}
@@ -827,10 +808,9 @@ lattice patterns}
 \end{block}
 \begin{block}{Future Work}
   \begin{itemize}
-  \item Promote the motion strategy
-  \item Theoretically prove the convergence of the algorithm 
-  \item Extend the algorithm to the multi-robot systems subject to the nonholonomic
-    constraints
+  \item Improve the motion strategy
+  \item Prove the convergence
+  \item Nonholonomic constraints
   \end{itemize}
 \end{block}
 \end{frame}
