@@ -4,7 +4,7 @@
 \usetheme[
 %%% options passed to the outer theme
 %    shownavsym          % show the navigation symbols
-  ]{AAUsimple}
+]{AAUsimple}
   
 % If you want to change the colors of the various elements in the theme, edit and uncomment the following lines
 % Change the bar and sidebar colors:
@@ -120,41 +120,63 @@
 %%%%%%%%%%%%%%%%
 
 \section{Introduction}
-\begin{frame}{Related Work}{}
-    \begin{columns}[T] % align columns
-      \begin{column}{.45\textwidth}
-        \small{Virtual Force}
-        \begin{figure}
-          \centering
-          \includegraphics[height=1in]{figs/james.png}
-        \end{figure}
-        \footnotesize{S. Prabhu, W Li, J. McLurkin, 2012}
-      \end{column}%
-      \begin{column}{.45\textwidth}
-        \small{Task Assignment}
-        \begin{center}
-        \animategraphics[height=1in,autoplay]{12}{figs/liu_}{0}{18}   
-        \end{center}
-        \footnotesize{ Lantao Liu and Dylan Shell, 2012}
-      \end{column}%
-    \end{columns}
-
+\begin{frame}{Related Work}{Formation using virtual force}
+   \begin{columns}[T] 
+    \begin{column}{.45\textwidth}
+      % \begin{center}
+      %   \animategraphics[height=1in,autoplay]{12}{figs/liu_}{0}{18}   
+      % \end{center}
+      \scriptsize{W. Spears, D. Spears, J. Hamann and R. Heil, 2004}
+      \begin{figure}
+        \centering
+        \includegraphics[height=1in]{figs/spears1.png}
+      \end{figure}
+    \end{column}%
+    \begin{column}{.45\textwidth}
+      \scriptsize{I. Navarro, J. Pugh, A. Martinoli, and
+        F. Matia, 2008}
+      \begin{figure}
+        \centering
+        \includegraphics[height=1in]{figs/navarro.png}
+      \end{figure}      
+    \end{column}
+  \end{columns}
+  \vspace{3mm}
+  \begin{columns}[T] 
+    \begin{column}{.45\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[height=1in]{figs/spears2.png}     
+      \end{figure}  
+    \end{column}%
+    \begin{column}{.45\textwidth}
+      \scriptsize{S. Prabhu, W. Li, J. McLurkin, 2012}
+      \begin{figure}
+        \centering
+        \includegraphics[height=1in]{figs/james.png}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
-
 \begin{frame}{Motivation}{}
-  % \begin{columns}
-  %   \begin{column}{.5\textwidth}
-      
-  %   \end{column}
-  %   \begin{column}{.5\textwidth}
-      
-  %   \end{column}
-  % \end{columns} 
-  \begin{figure}
-    \centering
-    \includegraphics[height=1in]{figs/tessellation.png}
-  \end{figure}
+  \begin{block}{Question: How to use one algorithm to generate
+      various (repeating) lattice pattern formations?}
+    \begin{columns}
+    \begin{column}{.45\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[height=1.5in]{figs/tessellation2.png}
+      \end{figure}
+    \end{column}
+    \begin{column}{.45\textwidth}
+       \begin{figure}
+         \centering
+        \includegraphics[height=1.5in]{figs/tessellation1.png}
+      \end{figure}
+    \end{column}
+  \end{columns} 
+  \end{block}
 \end{frame}
 
 
@@ -365,10 +387,10 @@
          \node[color=blue] at (2.5,1.5) {$descendant$};
          \node[color=black] at (3, 4.5) {Form Tree Structure};
          \path (3,3) -- (1.25, 1.25) node[pos=\rP] (q){};
-         \draw[post, color=red] (3,3) -- (q.west);
+         \draw[post, color=red] (3,3) -- (q);
            
          \path (3,3) -- (0.5, 4.125) node[pos=\rP] (q){};
-         \draw[post, color=red] (3,3) -- (q.west);
+         \draw[post, color=red] (3,3) -- (q);
         }
         \newframe*
         \multiframe{10}{r = 1 + 1}{ 
@@ -389,7 +411,7 @@
         \newframe*
         \multiframe{10}{r = 1 + 1}{ 
           \draw[fill=red] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
-          \node[color=black] at (3, 4.5) {Move};  
+          \node[color=black] at (3, 4.5) {Movement Control};  
           \draw[post, color=red] (3,3) -- (1,3);
           \draw[post, color=red] (3,3) -- (3,1);
           \draw[fill=blue] (1,3) -- (0.75,3) -- (1.25,3.25) -- (1,2.75) -- cycle;
@@ -698,55 +720,84 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 \begin{frame}{Bounded Movement}{}
+  \begin{block}{Goal: let descendant stay in the range of its parent}
     \begin{columns}[T] % align columns
-      \begin{column}{.5\textwidth}
+      \begin{column}{.45\textwidth}
         \begin{itemize}
-        \item Set $O$ (\textcolor{red}{Red circle}) denotes the parent's
-          observation at next stage.
-        \item Descendant can be anywhere in set $P$ (\textcolor{blue}{blue
-            circle}) at next stage.
-        \item The real destination for descendant is the closest
-          position on the boundary of the intersection ($O\cap P$) to
-          the assigned destination.
+        \item Within the set $O$ (\textcolor{red}{Red circle}), the
+          parent is guaranteed to get observation at next stage.
+        \item Descendant can reach anywhere in set $P$
+          (\textcolor{blue}{blue circle}) at next stage.
+        \item The real destination for descendant is the closest point
+          on the boundary of the intersection ($O\cap P$) to the
+          assigned destination.
         \end{itemize}
       \end{column}%
-      \begin{column}{.5\textwidth}
-      % Definition of circles
-        \def\firstcircle{(0,0) circle (2cm)}
-        \def\secondcircle{(2.3,1.8) circle (1.5cm)}
-        \def\thirdcircle{(0,0) circle (1.5cm)}
-        \colorlet{circle edge}{blue!50}
-        \colorlet{circle area}{blue!20}
-        \tikzset{filled/.style={fill=circle area, draw=circle edge, thick},
-          outline/.style={draw=circle edge, thick}}
-        \tikzstyle{important line}=[very thick]
-        % Set A and B
-        \begin{tikzpicture}[scale=0.65]
-          \begin{scope}
-            \clip \firstcircle;
-            \fill[filled] \secondcircle;
-          \end{scope}       
-          \draw[outline, red] \firstcircle node {$ $}; 
-          \draw[fill=circle area, red] (0,0) circle (0.1cm); 
-          \node at (-0.75,-0.3) {Parent};
+      \begin{column}{.45\textwidth}
+        \def\parentcircle{(3,3) circle (2cm)}
+        \def\childcircle{(1,4) circle (1cm)}
+        \begin{animateinline}[
+          begin={%
+            \begin{tikzpicture}%
+              [post/.style={->,>=stealth', thick, draw=blue!50},
+              node/.style={circle,fill=red!20,draw,font=\sffamily\small}]
+              \useasboundingbox (0,1) rectangle (5.1,5.1);
+            },
+            end={\end{tikzpicture}}
+          ]{10}
+          % center is (3,4)
+          \draw[fill=red!50] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
+          \node[color=red] at (3,3.5) {\scriptsize{Parent}};
+          % center is (1, 4)
+          \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,4.25) -- (1,3.75)  -- cycle;
           
-          \draw[outline]
-          \secondcircle node {$ $};
-
-          \draw[fill=circle area, blue] (2.3,1.8) circle (0.1cm); 
-          \node at (3.2, 2.3) {Descendant};
-
-          \draw[fill=circle area, blue] (3, -0.7) circle (0.1cm); 
-          \node at (3.8,-1) {Assigned Destination};
-
-          \draw[fill=circle area, blue] (1.96, 0.32) circle (0.1cm); 
-          \node  at (3.5,0) {Real Destination};
-        \end{tikzpicture}
+          \node[color=blue] at (2.8, 1.2) {\scriptsize{Assigned
+              Destination}};
+          \draw[dashed] (2,2) -- (2.25,1.5) -- (2.25,1.75) --
+          (2.5,1.75) -- cycle;
+          %%%% 
+          \newframe*
+          \multiframe{10}{r = 1 + 1}{ 
+            \draw[red] (3,3) circle (2);
+            \begin{scope}
+              \clip \parentcircle;
+              \filldraw[fill=violet!20] \childcircle;
+            \end{scope}  
+            % center is (3,3)
+            \draw[fill=red!50] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
+            \node[color=red] at (3,3.5) {\scriptsize{Parent}};
+            \draw[blue] (1, 4) circle (1);
+            \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,4.25) --
+            (1,3.75)  -- cycle;
+            % center is (2.25, 1.75)
+            \draw[dashed] (2,2) -- (2.25,1.5) -- (2.25,1.75) --
+            (2.5,1.75) -- cycle;
+            \node[color=blue] at (2.8, 1.2) {\scriptsize{Assigned Destination}};
+          }
+          \newframe*
+          \multiframe{10}{r = 1 + 1}{ 
+             \begin{scope}
+              \clip \parentcircle;
+              \filldraw[fill=violet!20] \childcircle;
+            \end{scope}  
+            \draw[fill=red!50] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
+            \node[color=red] at (3,3.5) {\scriptsize{Parent}};
+            \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,4.25) --
+            (1,3.75)  -- cycle;
+            % intersected point is (1,3)
+            \draw[fill=blue] (1.48, 3.12) circle (0.05);
+            \node[color=blue] at (1.2, 2.5) {\scriptsize{Real Destination}};
+            \draw[dashed] (2,2) -- (2.25,1.5) -- (2.25,1.75) --
+            (2.5,1.75) -- cycle;
+            \node[color=blue] at (2.8, 1.2) {\scriptsize{Assigned Destination}};
+          }
+        \end{animateinline}
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       \end{column}%
     \end{columns}
+  \end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%
-
 
 \section{Results}
 \begin{frame}{Simulation}{Octagon-square formation with 100 robots}
@@ -761,30 +812,40 @@
   \end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%
 % how to modify the theme
 % {\setbeamercolor{AAUsimple}{fg=gray!50,bg=orange!50}
 %  \setbeamercolor{structure}{fg=red}
 %  \setbeamercolor{frametitle}{use=structure,fg=structure.fg}
 %  \setbeamercolor{normal text}{bg=gray!20}
-\begin{frame}{Results}{on three kinds of repeated
+\begin{frame}{Experiment Results}{on three kinds of repeated
 lattice patterns}
-
 \begin{figure}
   \centering
-  \includegraphics[width=0.75\textwidth]{figs/exptime}
+  \includegraphics[width=0.8\textwidth]{figs/exptime}
 \end{figure}
-
+\begin{center}
+  \footnotesize{Average time to the static position with $50$ trials, uniform distribution.}
+\end{center}
 \end{frame}
 %%%%%%%%%%%%%%%%
-\begin{frame}{Results}{on three kinds of repeated
+\begin{frame}{Experiment Results}{on three kinds of repeated
 lattice patterns}
-
+% \begin{columns}
+%   \begin{column}{.7\textwidth}
+%
+%   \end{column}
+%   \begin{column}{.2\textwidth}
+%    
+%   \end{column}
+% \end{columns}
 \begin{figure}
   \centering
-  \includegraphics[width=0.75\textwidth]{figs/expqual}
+  \includegraphics[width=0.8\textwidth]{figs/expqual}
 \end{figure}
+\begin{center}
+  \footnotesize{Average non-fulfillment ratio $\Gamma = \dfrac{1}{n}\sum\limits_{i=1}^n \frac{E_i - N_i}{E_i}$ with $50$ trials, uniform distribution.}  
+\end{center}
+
 \end{frame}
 
 \subsection{Conclusions}
