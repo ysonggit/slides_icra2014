@@ -120,7 +120,7 @@
 %%%%%%%%%%%%%%%%
 
 \section{Introduction}
-\begin{frame}{Related Work}{Formation using virtual force}
+\begin{frame}{Related Work}{Formation using virtual forces}
    \begin{columns}[T] 
     \begin{column}{.45\textwidth}
       % \begin{center}
@@ -209,7 +209,7 @@
           \theta]^T$ to represent robot's \textbf{pose}.
         \item Each robot has a \textbf{range} within which it can
           sense and communicate with other robots.
-        \item Each robot gets \textbf{observation} of its neighbors'
+        \item Each robot gets \textbf{observations} of its neighbors'
           IDs and relative poses in its body frame.
         \end{itemize}
       \end{column}%
@@ -275,7 +275,7 @@
     r_1, \ldots, r_n \}$, $R$ \textbf{satisfies} $G$ if
     there exists a role function $f: R \rightarrow V$ that preserves
     the neighborhood structure of $G$.
-    \\
+    \vspace{3mm} \\
     Specifically, for any $i$ and $j$, if $r_i$ and $r_j$ are neighbors, 
     there must exist an edge
     $e_{ij}: \edge{f(r_i)}{}{f(r_j)}$ in $E$, such that
@@ -323,7 +323,7 @@
   \begin{block}{General Description}
   \begin{columns}[T] % align columns
    \begin{column}{.45\textwidth}
-     Robot broadcasts message containing its
+     Robots broadcast messages containing their:
      \begin{itemize}
      \item \textcolor{red}{authority} 
      \item \textcolor{red}{matching}.
@@ -331,7 +331,7 @@
 
       \begin{enumerate}
       \item Form tree structure.
-      \item Use tree structure to computer local task assignment.
+      \item Use tree structure to compute local task assignment.
       \item Make movement decision.
       \end{enumerate}
     \end{column}%
@@ -425,9 +425,9 @@
 %%%%%%%%%%%%%%%%
 \subsection{Robot Authority}
 \begin{frame}{Authority}
-  \begin{block}{Define authority and comparison operator}
+  \begin{block}{}
     \begin{bclogo}[logo=\bccrayon,couleur=orange!10, arrondi=0.1,
-      ombre=true]{}
+      ombre=true]{Definition}
       \small{An \textbf{authority} is an ordered list of robot IDs
         $$(\id_1, \ldots, \id_k)$$
         The first ID in the list, $\id_1$ is called the \textbf{root} ID.
@@ -435,7 +435,7 @@
 %        The number of IDs in the list is called its \textbf{length}}
     \end{bclogo}
     \begin{bclogo}[logo=\bccrayon,couleur=orange!10, arrondi=0.1,
-      ombre=true]{}
+      ombre=true]{Definition}
       \small{Authority $A_2$ is \textbf{higher than} $A_1$ if:}
       \begin{itemize}
       \item \small{root ID of $A_2 >$ root ID of $A_1$, or}
@@ -572,7 +572,7 @@
   % \ldots \}$ be the set that contains the IDs of the neighbors of $r_i$.  
   %\begin{columns}[T] 
     %\begin{column}{.45\textwidth}
-   \begin{bclogo}[logo=\bccrayon,arrondi=0.1]{} 
+   \begin{bclogo}[logo=\bccrayon,arrondi=0.1]{Definition} 
      A \textbf{matching} for a robot is a function $\eta : \{\id(r_a),
      \id(r_b), \ldots \} \rightarrow \{\emptyset,e_{ij}, e_{ik},
      \ldots\} $ that associates each neighbor ID with either a lattice
@@ -617,11 +617,11 @@
 %%%%%%%%%%%%%%%%
 
 % installation on Microsoft Windows Cont'd
-\begin{frame}{2. Local Task Assignment}{Hungarain Algorithm}
+\begin{frame}{2. Local Task Assignment}{Hungarian Algorithm}
   To compute an optimal matching of a robot with $N$ neighbors and $E$
   out-going edges of its role in the lattice graph, define a weight
   matrix of size $N \times \max(N, E)$ and apply
-  \textcolor{scred}{Hungarian Algorithm} (Harold W. Kuhn, 1955).
+  \textcolor{scred}{Hungarian Algorithm} (H. W. Kuhn, 1955).
     \begin{columns}[T] % align columns
       \begin{column}{.5\textwidth}
         \begin{enumerate}
@@ -720,7 +720,7 @@
 \end{frame}
 %%%%%%%%%%%%%%%%
 \begin{frame}{Bounded Movement}{}
-  \begin{block}{Goal: let descendant stay in the range of its parent}
+  \begin{block}{Goal: stay within the  range of its parent}
     \begin{columns}[T] % align columns
       \begin{column}{.45\textwidth}
         \begin{itemize}
@@ -729,8 +729,7 @@
         \item Descendant can reach anywhere in set $P$
           (\textcolor{blue}{blue circle}) at next stage.
         \item The real destination for descendant is the closest point
-          on the boundary of the intersection ($O\cap P$) to the
-          assigned destination.
+          in the intersection ($O\cap P$) to the assigned destination.
         \end{itemize}
       \end{column}%
       \begin{column}{.45\textwidth}
@@ -854,17 +853,17 @@ lattice patterns}
 \begin{block}{Summary}
   \begin{itemize}
   \item Robots can form different types of geometric formations,
-    including the repeated lattice patterns
+    including repeated lattice patterns.
   \item Algorithm scales reasonably well with increasing numbers of
-    robot
+    robot.
   \item Algorithm is robust to the situation when some robots are removed from or
-    with more robots added to the system
+    with more robots added to the system.
   \end{itemize}
 \end{block}
 \begin{block}{Future Work}
   \begin{itemize}
   \item Improve the motion strategy
-  \item Prove the convergence
+  \item Prove convergence
   \item Nonholonomic constraints
   \end{itemize}
 \end{block}
