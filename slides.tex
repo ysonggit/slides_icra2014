@@ -726,8 +726,8 @@
         \begin{itemize}
         \item Within the set $O$ (\textcolor{red}{Red circle}), the
           parent is guaranteed to get observation at next stage.
-        \item Descendant can reach anywhere in set $P$
-          (\textcolor{blue}{blue circle}) at next stage.
+        \item Set $P$ (\textcolor{blue}{blue circle}) denotes
+          reachable point of the descendant in one step.
         \item The real destination for descendant is the closest point
           in the intersection ($O\cap P$) to the assigned destination.
         \end{itemize}
@@ -748,12 +748,9 @@
           \draw[fill=red!50] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
           \node[color=red] at (3,3.5) {\scriptsize{Parent}};
           % center is (1, 4)
-          \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,4.25) -- (1,3.75)  -- cycle;
-          
-          \node[color=blue] at (2.8, 1.2) {\scriptsize{Assigned
-              Destination}};
-          \draw[dashed] (2,2) -- (2.25,1.5) -- (2.25,1.75) --
-          (2.5,1.75) -- cycle;
+          \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,3.75) -- (1,4.25)  -- cycle;          
+          \node[color=blue] at (2.8, 1.2) {\scriptsize{Assigned Destination}};
+          \draw[dashed] (2,2) -- (2.25,1.5) -- (2.25,1.75) --  (2.5,1.75) -- cycle;
           %%%% 
           \newframe*
           \multiframe{10}{r = 1 + 1}{ 
@@ -766,8 +763,7 @@
             \draw[fill=red!50] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
             \node[color=red] at (3,3.5) {\scriptsize{Parent}};
             \draw[blue] (1, 4) circle (1);
-            \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,4.25) --
-            (1,3.75)  -- cycle;
+            \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,3.75) -- (1,4.25)  -- cycle;
             % center is (2.25, 1.75)
             \draw[dashed] (2,2) -- (2.25,1.5) -- (2.25,1.75) --
             (2.5,1.75) -- cycle;
@@ -781,8 +777,7 @@
             \end{scope}  
             \draw[fill=red!50] (3,3) -- (2.75,3) -- (3.25,3.25) -- (3,2.75)  -- cycle;
             \node[color=red] at (3,3.5) {\scriptsize{Parent}};
-            \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,4.25) --
-            (1,3.75)  -- cycle;
+            \draw[fill=blue!50] (1,4) -- (0.75,4) -- (1.25,3.75) -- (1,4.25)  -- cycle;
             % intersected point is (1,3)
             \draw[fill=blue] (1.48, 3.12) circle (0.05);
             \node[color=blue] at (1.2, 2.5) {\scriptsize{Real Destination}};
@@ -799,6 +794,41 @@
 %%%%%%%%%%%%%%%%
 
 \section{Results}
+\begin{frame}{Simulation}{Octagon-square lattice pattern formation}
+  \begin{block}{Lattice graph for the octagon-square lattice}
+    \begin{figure}
+        \centering
+        % \includegraphics[scale=0.38]{figs/hex}
+        \begin{tikzpicture}[->,>=stealth',shorten >=5pt,auto,node
+          distance=2cm]
+            \tikzstyle{every state}=[fill=purple, draw=none,
+            text=white]
+            %                  D
+            %      C      A 
+            % 
+            %             B
+            \node[state, scale=0.75] (A) at (0,0)    {$0$};
+            \node[state, scale=0.75, fill=cyan] (B) at (0,-3)  {$1$};
+            \node[state, scale=0.75, fill=green] (C) at (-3,0) {$2$};
+            \node[state, scale=0.75, fill=orange] (D) at (2,2) {$4$};
+            \path (A) edge (B)% node {\scriptsize{Tr(0, -40)}} (B)
+                  (A) edge (C) %node {\scriptsize{Tr(-40, 0)}} (C)
+                  (A) edge (D); %node {\scriptsize{Tr(28,28)}}  (D);
+            \path (B) edge [bend left=10] (A)
+                  (B) edge (D) % node {\scriptsize{Tr(-40,0)}}  (D); 
+                  (B) edge (C);% node {\scriptsize{Tr(-28,28)}} (C);
+            \path (C) edge [bend right=30] (B)
+                  (C) edge [bend left=10] (A)
+                  (C) edge [bend left=30] (D);
+            \path (D) edge [bend left=30] (B)
+                  (D) edge [bend right=10] (A)
+                  (D) edge (C);
+         
+        \end{tikzpicture}
+      \end{figure}
+  \end{block}
+\end{frame}
+
 \begin{frame}{Simulation}{Octagon-square formation with 100 robots}
   \begin{center}
     \includemovie[toolbar,poster,autoplay]{7cm}{7cm}{octagonsq1000009v12sr55.mp4}
